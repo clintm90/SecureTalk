@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.trackcell.securetalk.Search" >
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/ResultContent"
+        android:clickable="true"
+        android:listSelector="@drawable/list_selector"
+        android:divider="@color/lightmiddlegrey"
+        android:dividerHeight="1dp"
+        android:choiceMode="singleChoice"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/searchField"/>
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchField"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:hint="@string/searchcontact"
+        android:imeOptions="actionSearch"
+        android:inputType="text|textNoSuggestions"
+        android:singleLine="true"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-7dp"
+        android:id="@+id/searchProgress"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:progress="100"
+        android:maxHeight="4dp"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        android:layout_marginBottom="-6dp"/>
+
+</RelativeLayout>

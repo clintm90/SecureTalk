@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="Salut" >
+        <Preference android:title="Acts like a button"
+            android:key="button"
+            android:summary="This will act like a button" />
+        <SwitchPreference
+            android:title="Flush"
+            android:summary="Salut" />
+        <EditTextPreference
+            android:title="Salut"
+            android:summary="Test"
+            android:key="owner" />
+    </PreferenceCategory>
+</PreferenceScreen>

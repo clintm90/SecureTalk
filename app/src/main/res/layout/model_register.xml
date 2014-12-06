@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="64dp"
+        android:scaleType="center"
+        android:background="@color/blue"
+        android:text="@string/registeronline"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="19sp"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/userexist"
+        android:gravity="center"
+        android:id="@+id/model_register_error"
+        android:layout_gravity="center_horizontal"
+        android:textSize="12sp"
+        android:height="23dp"
+        android:background="@color/red"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Pour commencer à utiliser notre service vous devez valider."
+        android:id="@+id/textView2"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="12dp"/>
+
+    <EditText
+        android:id="@+id/model_register_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Clint Mourlevat"
+        android:hint="@string/name"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="12dp"
+        android:inputType="textPersonName|textNoSuggestions"/>
+
+    <EditText
+        android:id="@+id/model_register_mail"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="clint.mourlevat@gmail.com"
+        android:hint="@string/mail"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="12dp"
+        android:inputType="textEmailAddress|textNoSuggestions"/>
+
+    <EditText
+        android:id="@+id/model_register_rsa_public_key"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Clé privé RSA : 305c300d06092a864886f70d0101010500034b003048024100a3c9e87e567ff3987e2f82ba1c7abedfcb4c5da0731a26dbdfcfbe50a28a5eaaa0c8371c9736c67f1f5e499ffaed1183cf6517040aa58b5f52a5b867699a2ecd0203010001"
+        android:hint="@string/noset"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="12dp"
+        android:inputType="text|textNoSuggestions"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="En savoir plus"
+        android:id="@+id/textView3"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="12dp"
+        android:textColorLink="@color/blue"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"/>
+
+</LinearLayout>

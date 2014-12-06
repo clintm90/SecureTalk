@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.trackcell.securetalk.Search" >
+
+    <item android:id="@+id/action_search_valid"
+        android:title="@string/action_valid"
+        android:icon="@drawable/ic_action_valid"
+        android:showAsAction="always" />
+
+</menu>

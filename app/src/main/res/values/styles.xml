@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:actionMenuTextColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.ProgressDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:background">@color/transparent</item>
+    </style>
+
+    <style name="AppTheme.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/blue</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:titleTextStyle">@style/AppTheme.ActionBar.Text</item>
+    </style>
+
+    <style name="AppTheme.ActionBar.Back" parent="AppTheme">
+        <item name="android:homeAsUpIndicator">@drawable/ic_action_arrow_left</item>
+    </style>
+
+    <style name="AppTheme.ActionBar.Text" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">19sp</item>
+    </style>
+
+</resources>

@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="64dp"
+        android:background="@color/blue"
+        android:text="@string/searchcontact"
+        android:contentDescription="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:gravity="center"/>
+
+    <EditText
+        android:id="@+id/model_add_contact_phone"
+        android:inputType="phone"
+        android:imeOptions="actionDone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:hint="Nom ou Prénom"
+        android:phoneNumber="true"/>
+
+</LinearLayout>
