@@ -1,15 +1,29 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+    }
     compileSdkVersion 20
     buildToolsVersion "20.0.0"
+
+    def versionPropsFile = file('version.properties')
+
+        def Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+
+        def runTasks = gradle.startParameter.taskNames
+        def versionBuild = versionProps['VERSION_BUILD'].toInteger()
+
+        versionProps['VERSION_BUILD'] = versionBuild.toString()
+
+        versionProps.store(versionPropsFile.newWriter(), null)
 
     defaultConfig {
         applicationId "com.trackcell.securetalk"
         minSdkVersion 16
         targetSdkVersion 20
-        versionCode 1
-        versionName "1.0"
+        versionCode versionBuild
+        versionName "1.1.${versionBuild})"
     }
     buildTypes {
         release {

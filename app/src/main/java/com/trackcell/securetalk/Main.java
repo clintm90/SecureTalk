@@ -129,6 +129,7 @@ public class Main extends Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
+                Main.BWImageView(false, (ImageView) view.findViewById(R.id.model_contactList_icon), 0);
                 GotoChat(view);
             }
         });
@@ -138,7 +139,7 @@ public class Main extends Activity
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
             {
-                return DeleteContact(((EnumContact)view.getTag()).ID);
+                return DeleteContact(view, ((EnumContact)view.getTag()).ID);
             }
         });
     }
@@ -181,7 +182,7 @@ public class Main extends Activity
                     imageView.setImageBitmap(bitmap);
                     if (isPhotoBW)
                     {
-                        Main.BWImageView(imageView, 50F);
+                        Main.BWImageView(true, imageView, 50F);
                     }
                 }
                 else
@@ -261,13 +262,20 @@ public class Main extends Activity
         });*/
     }
 
-    public static void BWImageView(ImageView imageView, float level)
+    public static void BWImageView(boolean execute, ImageView imageView, float level)
     {
-        imageView.setColorFilter(new ColorMatrixColorFilter(new float[]
+        if(execute)
+        {
+            imageView.setColorFilter(new ColorMatrixColorFilter(new float[]
                 {
-                0.33F, 0.33F, 0.33F, 0.0F, level, 0.33F, 0.33F, 0.33F, 0.0F, level,
-                0.33F, 0.33F, 0.33F, 0.0F, level, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F
-        }));
+                        0.33F, 0.33F, 0.33F, 0.0F, level, 0.33F, 0.33F, 0.33F, 0.0F, level,
+                        0.33F, 0.33F, 0.33F, 0.0F, level, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F
+                }));
+        }
+        else
+        {
+            imageView.setColorFilter(null);
+        }
     }
 
     public boolean AutorizeActivityLaunch(Intent intent, int i)
@@ -294,12 +302,13 @@ public class Main extends Activity
         }
     }
 
-    public boolean DeleteContact(final String id)
+    public boolean DeleteContact(View view, final String id)
     {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         try
         {
-            alertDialog.setTitle(new JSONObject(mPrefs.getString(id, "none")).getString("name"));
+            JSONObject json = new JSONObject(mPrefs.getString(id, "none"));
+            alertDialog.setTitle(json.getString("name"));
         }
         catch (JSONException e)
         {
@@ -447,13 +456,22 @@ public class Main extends Activity
                 mDialog.dismiss();
                 try
                 {
-                    InitUser(true);
-                    mStorageGlobal.putBoolean("initialized", true);
-                    mStorageGlobal.putString("owner", value[0]);
-                    mStorageGlobal.putString("public_key", value[1]);
-                    mStorageGlobal.putString("private_key", value[2]);
-                    mStorageGlobal.putString("name", value[3]);
-                    mStorageGlobal.apply();
+                    if (value[4].equals("false"))
+                    {
+                        InitUser(true);
+                        return;
+                    }
+                    else
+                    {
+                        JSONObject registerValue = new JSONObject(value[4]);
+
+                        mStorageGlobal.putBoolean("initialized", true);
+                        mStorageGlobal.putString("owner", value[0]);
+                        mStorageGlobal.putString("public_key", value[1]);
+                        mStorageGlobal.putString("private_key", value[2]);
+                        mStorageGlobal.putString("name", value[3]);
+                        mStorageGlobal.apply();
+                    }
                 }
                 catch (Exception e)
                 {

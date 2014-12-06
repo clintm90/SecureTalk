@@ -304,7 +304,8 @@ public class Chat extends Activity
                     @Override
                     protected void onPreExecute()
                     {
-                        mChatField.setText(R.string.sending);
+                        mChatField.setText("");
+                        mChatField.setHint(R.string.sending);
                     }
 
                     @Override
@@ -320,7 +321,7 @@ public class Chat extends Activity
                         {
                             mChatField.setError(getString(R.string.nosend));
                         }
-                        mChatField.setText("");
+                        mChatField.setHint(R.string.entermessage);
                     }
 
                     @Override
@@ -337,7 +338,7 @@ public class Chat extends Activity
                             finish();
                         }
 
-                        mChatField.setText(null);
+                        mChatField.setHint(R.string.entermessage);
                     }
                 }.execute(mChatField.getText().toString(), mPrefsGlobal.getString("owner", "none"), getIntent().getStringExtra("recipient"));
             }

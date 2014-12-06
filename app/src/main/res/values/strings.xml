@@ -29,7 +29,7 @@
     <string name="wouldelete">Voulez-vous vraiment supprimer ce contact ?</string>
     <string name="no">Non</string>
     <string name="yes">Oui</string>
-    <string name="register">Enregistrement...</string>
+    <string name="register">Enregistrement&#8230;</string>
     <string name="registeronline">Enregistrement en ligne...</string>
     <string name="mail">Adresse mail</string>
     <string name="name">Nom et Prénom</string>
