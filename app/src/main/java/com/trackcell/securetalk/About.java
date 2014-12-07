@@ -2,6 +2,7 @@ package com.trackcell.securetalk;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +20,16 @@ public class About extends Activity {
 
     public void Rate(MenuItem item)
     {
+        Intent intent = new Intent();
+        intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.cubeactive.qnotelistfree"));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        setResult(RESULT_OK, new Intent().putExtra("result", 1));
+        super.onBackPressed();
     }
 
     @Override
