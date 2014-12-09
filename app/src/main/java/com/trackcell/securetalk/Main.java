@@ -73,8 +73,8 @@ public class Main extends Activity
     private PhoneNumberUtil mPhoneUtil;
     private SharedPreferences mPrefs;
     private SharedPreferences mPrefsGlobal;
-    private android.content.SharedPreferences.Editor mStorage;
-    private android.content.SharedPreferences.Editor mStorageGlobal;
+    private SharedPreferences.Editor mStorage;
+    private SharedPreferences.Editor mStorageGlobal;
     private TelephonyManager mTelephonyManager;
 
     private KeyPair mKP;
@@ -121,7 +121,7 @@ public class Main extends Activity
 
         InitUser(false);
 
-        MessageWorkerLoop();
+        //MessageWorkerLoop();
 
         setContentView(R.layout.activity_main);
 
@@ -148,23 +148,23 @@ public class Main extends Activity
         });
     }
 
-    public void MessageIteratorTask()
+    /*public void MessageIteratorTask()
     {
         this.runOnUiThread(new Runnable()
         {
             public void run()
             {
-                new AsyncTask<Void, Void, String>()
+                new AsyncTask<String, Void, String>()
                 {
                     @Override
-                    protected String doInBackground(Void... params)
+                    protected String doInBackground(String... params)
                     {
                         Thread.currentThread().setName("MessageIteratorTask");
 
                         try
                         {
                             String rts = "", c;
-                            URL mURL = new URL("http://perdu.com");
+                            URL mURL = new URL(Initialize.SecureTalkServer + "getMessageByID.php?recipient=" + params[0] + "&put=false");
                             BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
 
                             while ((c = reader.readLine()) != null)
@@ -188,19 +188,30 @@ public class Main extends Activity
                     @Override
                     protected void onCancelled()
                     {
-                        //setResult(RESULT_OK, new Intent().putExtra("result", 3).putExtra("error_content", getResources().getString(R.string.noconnection)));
-                        //finish();
                     }
 
                     @Override
                     protected void onPostExecute(String result)
                     {
-                        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                        try
+                        {
+                            JSONObject mRoot = new JSONObject(result);
+                            JSONObject mItems = mRoot.getJSONObject("result");
+
+                            for (int i = 0; i < mItems.getJSONArray("item").length(); i++)
+                            {
+                                JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
+                                Toast.makeText(getApplicationContext(), currentObject.getString("content"), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                        }
                     }
-                }.execute();
+                }.execute(mPrefsGlobal.getString("owner", "none"));
             }
         });
-    }
+    }*/
 
     public static void LoadGravatar(final Context context, final ImageView imageView, String id, final boolean isPhotoBW)
     {
@@ -214,7 +225,7 @@ public class Main extends Activity
                 try
                 {
                     httpURLConnection = (HttpURLConnection)(new URL("http://www.gravatar.com/avatar/" + params[0] + "?s=80&d=mm")).openConnection();
-                    return BitmapFactory.decodeStream(httpURLConnection.getInputStream(), null, new android.graphics.BitmapFactory.Options());
+                    return BitmapFactory.decodeStream(httpURLConnection.getInputStream(), null, new BitmapFactory.Options());
                 }
                 catch(UnknownHostException e)
                 {
@@ -578,7 +589,7 @@ public class Main extends Activity
 
                     builder.setView(modelRegister);
                     builder.setCancelable(false);
-                    builder.setNegativeButton(getString(R.string.refuse), new android.content.DialogInterface.OnClickListener()
+                    builder.setNegativeButton(getString(R.string.refuse), new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialoginterface, int i)
                         {
@@ -587,7 +598,7 @@ public class Main extends Activity
                         }
                     });
 
-                    builder.setPositiveButton(getString(R.string.valid), new android.content.DialogInterface.OnClickListener()
+                    builder.setPositiveButton(getString(R.string.valid), new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialoginterface, int i)
                         {
@@ -761,7 +772,7 @@ public class Main extends Activity
             @Override
             public void run()
             {
-                MessageIteratorTask();
+                //MessageIteratorTask();
             }
 
         }, 0, 10000);

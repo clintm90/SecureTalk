@@ -16,13 +16,16 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MessageWorker extends Service
 {
     private NotificationManager mNotificationManager;
     private SharedPreferences mPrefsGlobal;
 
-    final AsyncTask<String, Void, String> Task = new AsyncTask<String, Void, String>()
+    //region MainTask
+    /*final AsyncTask<String, Void, String> Task = new AsyncTask<String, Void, String>()
     {
         @Override
         protected String doInBackground(String... params)
@@ -70,13 +73,6 @@ public class MessageWorker extends Service
                 {
                     JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
 
-                    /*Notification mNotification = new Notification.Builder(getApplicationContext())
-                            .setContentTitle(getString(R.string.app_name))
-                            .setContentText(getString(R.string.newmesage))
-                            .setSmallIcon(R.drawable.ic_stat_mail)
-                            .build();
-                    mNotificationManager.notify(001, mNotification);*/
-
                     Toast.makeText(getApplicationContext(), currentObject.getString("content"), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -85,7 +81,8 @@ public class MessageWorker extends Service
                 e.printStackTrace();
             }
         }
-    };
+    };*/
+    //endregion
 
     public MessageWorker()
     {
@@ -103,7 +100,76 @@ public class MessageWorker extends Service
         mNotificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        Task.execute(mPrefsGlobal.getString("owner", "none"));
+        Timer Task = new Timer();
+        Task.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                new Runnable()
+                {
+                    public void run()
+                    {
+                        new AsyncTask<String, Void, String>()
+                        {
+                            @Override
+                            protected String doInBackground(String... params)
+                            {
+                                Thread.currentThread().setName("MessageIteratorTask");
+
+                                try
+                                {
+                                    String rts = "", c;
+                                    URL mURL = new URL(Initialize.SecureTalkServer + "getMessageByID.php?recipient=" + params[0] + "&put=false");
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
+
+                                    while ((c = reader.readLine()) != null)
+                                        rts += c;
+                                    return rts;
+                                }
+                                catch (UnknownHostException e)
+                                {
+                                    //NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
+                                    //if (netInfo == null || !netInfo.isConnectedOrConnecting())
+                                    return null;
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                    return null;
+                                }
+                            }
+
+                            @Override
+                            protected void onCancelled()
+                            {
+                            }
+
+                            @Override
+                            protected void onPostExecute(String result)
+                            {
+                                try
+                                {
+                                    JSONObject mRoot = new JSONObject(result);
+                                    JSONObject mItems = mRoot.getJSONObject("result");
+
+                                    for (int i = 0; i < mItems.getJSONArray("item").length(); i++)
+                                    {
+                                        JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
+                                        Toast.makeText(getApplicationContext(), currentObject.getString("content"), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                }
+                            }
+                        }.execute(mPrefsGlobal.getString("owner", "none"));
+                    }
+                };
+            }
+        }, 0, 10000);
+
+        //Task.execute(mPrefsGlobal.getString("owner", "none"));
 
         return START_STICKY;
     }

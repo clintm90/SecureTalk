@@ -162,7 +162,7 @@ public class Chat extends Activity
             try
             {
                 String rts = "", c;
-                URL mURL = new URL(Initialize.SecureTalkServer + "getMessageByID.php?sender=" + params[0] + "&recipient=" + params[1]);
+                URL mURL = new URL(Initialize.SecureTalkServer + "getMessageByID.php?sender=" + params[0] + "&recipient=" + params[1] + "&put=true");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
                 while ((c = reader.readLine()) != null)
                     rts += c;
