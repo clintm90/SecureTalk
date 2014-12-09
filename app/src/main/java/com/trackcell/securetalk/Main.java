@@ -706,7 +706,7 @@ public class Main extends Activity
             try
             {
                 JSONObject json = new JSONObject(current.getValue().toString());
-                mContactListAdapter.add(new EnumContact(getApplicationContext(), current.getKey(), json.getString("name"), json.getString("description"), json.getString("public_key"), false).bwPhoto());
+                mContactListAdapter.add(new EnumContact(getApplicationContext(), current.getKey(), json.getString("name"), json.getString("description"), json.getString("public_key"), false).bwPhoto().singleLine());
             }
             catch (JSONException e)
             {
