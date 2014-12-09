@@ -60,6 +60,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -119,6 +121,8 @@ public class Main extends Activity
 
         InitUser(false);
 
+        MessageWorkerLoop();
+
         setContentView(R.layout.activity_main);
 
         mMainContent = (ListView)findViewById(R.id.mainContent);
@@ -140,6 +144,60 @@ public class Main extends Activity
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
             {
                 return DeleteContact(view, ((EnumContact)view.getTag()).ID);
+            }
+        });
+    }
+
+    public void MessageIteratorTask()
+    {
+        this.runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                new AsyncTask<Void, Void, String>()
+                {
+                    @Override
+                    protected String doInBackground(Void... params)
+                    {
+                        Thread.currentThread().setName("MessageIteratorTask");
+
+                        try
+                        {
+                            String rts = "", c;
+                            URL mURL = new URL("http://perdu.com");
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
+
+                            while ((c = reader.readLine()) != null)
+                                rts += c;
+                            return rts;
+                        }
+                        catch(UnknownHostException e)
+                        {
+                            NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
+                            if(netInfo == null || !netInfo.isConnectedOrConnecting())
+                                cancel(true);
+                            return null;
+                        }
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected void onCancelled()
+                    {
+                        //setResult(RESULT_OK, new Intent().putExtra("result", 3).putExtra("error_content", getResources().getString(R.string.noconnection)));
+                        //finish();
+                    }
+
+                    @Override
+                    protected void onPostExecute(String result)
+                    {
+                        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                    }
+                }.execute();
             }
         });
     }
@@ -421,6 +479,8 @@ public class Main extends Activity
             @Override
             protected String[] doInBackground(Object... params)
             {
+                Thread.currentThread().setName("InitUser");
+
                 try
                 {
                     String rts = "", c;
@@ -691,6 +751,21 @@ public class Main extends Activity
         }
         Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();*/
         //endregion
+    }
+
+    public void MessageWorkerLoop()
+    {
+        Timer Task = new Timer();
+        Task.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                MessageIteratorTask();
+            }
+
+        }, 0, 10000);
+        //TODO: Change loop interval
     }
 
     public void Populate()
