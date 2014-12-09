@@ -42,5 +42,6 @@
     <string name="valid">Accept</string>
     <string name="wouldelete">Delete this contact ?</string>
     <string name="yes">Yes</string>
+    <string name="about_value">About</string>
 
 </resources>
