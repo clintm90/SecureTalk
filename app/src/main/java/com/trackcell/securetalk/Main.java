@@ -193,6 +193,7 @@ public class Main extends Activity
         };
         GravatarTask.execute(id);
 
+        //region old gravatar task
         /*(new AsyncTask(s, imageview, flag, context) {
 
             final Context val$context;
@@ -260,6 +261,7 @@ public class Main extends Activity
         }).execute(new String[] {
                 s
         });*/
+        //endregion
     }
 
     public static void BWImageView(boolean execute, ImageView imageView, float level)
@@ -314,21 +316,29 @@ public class Main extends Activity
         {
             e.printStackTrace();
         }
-        alertDialog.setMessage(getString(R.string.wouldelete));
-        alertDialog.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener()
+        alertDialog.setItems(new String[]{getString(R.string.showcontact), getString(R.string.deletecontact)}, new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                mStorage.remove(id);
-                mStorage.apply();
-                Populate();
+                switch(which)
+                {
+                    case 0:
+                        Populate();
+                        break;
+
+                    case 1:
+                        mStorage.remove(id);
+                        mStorage.apply();
+                        Populate();
+                        break;
+                }
             }
         });
-        alertDialog.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener()
+        alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener()
         {
             @Override
-            public void onClick(DialogInterface dialog, int which)
+            public void onCancel(DialogInterface dialog)
             {
                 Populate();
             }
@@ -420,7 +430,7 @@ public class Main extends Activity
                     while ((c = reader.readLine()) != null)
                         rts += c;
 
-                    String[] toReturn = new String[5];
+                    String[] toReturn = new String[10];
                     toReturn[0] = params[1].toString();
                     toReturn[1] = params[2].toString();
                     toReturn[2] = params[3].toString();
@@ -450,6 +460,8 @@ public class Main extends Activity
             protected void onCancelled()
             {
                 mDialog.dismiss();
+                mWelcomeLabel.setText(getString(R.string.noconnection));
+                mWelcomeLabel.setBackgroundColor(getResources().getColor(R.color.red));
             }
 
             @Override
@@ -535,6 +547,7 @@ public class Main extends Activity
             }
         }
 
+        //region old task
         /*final AsyncTask MainTask = new AsyncTask() {
 
             private String cancelString;
@@ -677,6 +690,7 @@ public class Main extends Activity
             return;
         }
         Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();*/
+        //endregion
     }
 
     public void Populate()
@@ -692,7 +706,7 @@ public class Main extends Activity
             try
             {
                 JSONObject json = new JSONObject(current.getValue().toString());
-                mContactListAdapter.add(new EnumContact(getApplicationContext(), current.getKey(), json.getString("name"), "Comment ca marche ?", json.getString("public_key"), false).bwPhoto());
+                mContactListAdapter.add(new EnumContact(getApplicationContext(), current.getKey(), json.getString("name"), json.getString("description"), json.getString("public_key"), false).bwPhoto());
             }
             catch (JSONException e)
             {
@@ -712,6 +726,7 @@ public class Main extends Activity
         }
     }
 
+    //region RSA Encrypt & Decrypt
     public String RSAEncrypt(String value) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException, DecoderException
     {
         X509EncodedKeySpec spec = new X509EncodedKeySpec(Hex.decodeHex(new String(getIntent().getStringExtra("public_key")).toCharArray()));
@@ -731,6 +746,7 @@ public class Main extends Activity
         byte[] decryptedBytes = mCipher.doFinal(stringBytes);
         return new String(decryptedBytes,"UTF-8");
     }
+    //endregion
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -740,7 +756,7 @@ public class Main extends Activity
                 if(data.getExtras().getBoolean("callback"))
                 {
                     EnumContact enumcontact = (EnumContact)data.getExtras().getSerializable("contact");
-                    mStorage.putString(enumcontact.ID, "{'id':'"+enumcontact.ID+"', 'name':'"+enumcontact.Name+"', 'public_key':'"+enumcontact.PublicKey+"'}");
+                    mStorage.putString(enumcontact.ID, "{'id':'"+enumcontact.ID+"', 'name':'"+enumcontact.Name+"', 'public_key':'"+enumcontact.PublicKey+"', 'description':'"+enumcontact.Description+"'}");
                     mStorage.apply();
                 }
             break;
@@ -805,7 +821,6 @@ public class Main extends Activity
 
     protected void onStop()
     {
-        //stopService(Initialize.mMessageWorkerService);
         super.onStop();
     }
 }

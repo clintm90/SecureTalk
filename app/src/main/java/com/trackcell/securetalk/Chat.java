@@ -51,6 +51,7 @@ public class Chat extends Activity
     private ClipboardManager mClipBoard;
     private ListView mMainContent;
     private EditText mChatField;
+    private TextView mNoMessages;
     private final static List<EnumChat> CHATLIST = new ArrayList<EnumChat>();
 
     private SharedPreferences mPrefsGlobal;
@@ -98,6 +99,7 @@ public class Chat extends Activity
 
         mMainContent = (ListView)findViewById(R.id.mainContentChat);
         mChatField = (EditText)findViewById(R.id.chatField);
+        mNoMessages = (TextView)findViewById(R.id.noMessages);
 
         mChatField.setCursorVisible(false);
 
@@ -210,6 +212,8 @@ public class Chat extends Activity
 
                     mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, currentObject.getString("time"), null, RSADecrypt(currentObject.getString("content"))));
                 }
+
+                mNoMessages.setVisibility(View.INVISIBLE);
 
                 mMainContent.setAdapter(mChatListAdapter);
             }

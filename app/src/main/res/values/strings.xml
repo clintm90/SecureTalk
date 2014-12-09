@@ -27,6 +27,9 @@
     <string name="valid">Accepter</string>
     <string name="refuse">Refuser</string>
     <string name="wouldelete">Voulez-vous vraiment supprimer ce contact ?</string>
+    <string name="showcontact">En savoir plus&#8230;</string>
+    <string name="deletecontact">Supprimer le contact</string>
+    <string name="cancel">Annuler</string>
     <string name="no">Non</string>
     <string name="yes">Oui</string>
     <string name="register">Enregistrement&#8230;</string>
@@ -46,5 +49,6 @@
     <string name="title_activity_about">A Propos&#8230;</string>
     <string name="about">A Propos de SecureTalk&#8230;</string>
     <string name="about_value">C\'est une application gratuite qui vous permet de vous...</string>
+    <string name="nomessage">Il n\'y à pas de message</string>
 
 </resources>
