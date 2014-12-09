@@ -330,6 +330,7 @@ public class Main extends Activity
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
+                Populate();
             }
         });
         alertDialog.show();
@@ -425,6 +426,7 @@ public class Main extends Activity
                     toReturn[2] = params[3].toString();
                     toReturn[3] = params[4].toString();
                     toReturn[4] = rts;
+                    toReturn[5] = params[0].toString();
                     return toReturn;
                 }
                 catch (UnknownHostException e)
@@ -456,21 +458,20 @@ public class Main extends Activity
                 mDialog.dismiss();
                 try
                 {
-                    if (value[4].equals("false"))
-                    {
-                        InitUser(true);
-                        return;
-                    }
-                    else
-                    {
-                        JSONObject registerValue = new JSONObject(value[4]);
+                    JSONObject registerValue = new JSONObject(value[4]);
 
+                    if (registerValue.getInt("response") == 1)
+                    {
                         mStorageGlobal.putBoolean("initialized", true);
                         mStorageGlobal.putString("owner", value[0]);
                         mStorageGlobal.putString("public_key", value[1]);
                         mStorageGlobal.putString("private_key", value[2]);
                         mStorageGlobal.putString("name", value[3]);
                         mStorageGlobal.apply();
+                    }
+                    else
+                    {
+                        InitUser(true);
                     }
                 }
                 catch (Exception e)
@@ -482,7 +483,7 @@ public class Main extends Activity
 
         if (mPrefsGlobal.getBoolean("initialized", false) && !mPrefsGlobal.getString("owner", "none").equals("none") && !mPrefsGlobal.getString("private_key", "none").equals("none"))
         {
-            MainTask.execute(false, mPrefsGlobal.getString("owner", "none"), mPrefsGlobal.getString("public_key", "none"), mPrefsGlobal.getString("private_key", "none"), mPrefsGlobal.getString("name", "none"));
+            MainTask.execute(registeringError, mPrefsGlobal.getString("owner", "none"), mPrefsGlobal.getString("public_key", "none"), mPrefsGlobal.getString("private_key", "none"), mPrefsGlobal.getString("name", "none"));
         }
         else
         {
@@ -497,6 +498,9 @@ public class Main extends Activity
 
                     final View modelRegister = getLayoutInflater().inflate(R.layout.model_register, null);
 
+                    //((EditText)modelRegister.findViewById(R.id.model_register_name));
+                    ((EditText)modelRegister.findViewById(R.id.model_register_mail)).setText(aaccount[0].name);
+
                     if(registeringError)
                         modelRegister.findViewById(R.id.model_register_error).setVisibility(View.VISIBLE);
 
@@ -506,7 +510,8 @@ public class Main extends Activity
                     {
                         public void onClick(DialogInterface dialoginterface, int i)
                         {
-                            finish();
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                            System.exit(0);
                         }
                     });
 
