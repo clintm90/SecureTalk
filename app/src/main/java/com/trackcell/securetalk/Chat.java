@@ -147,16 +147,6 @@ public class Chat extends Activity
                 return true;
             }
         });
-
-        /*ChatListAdapter mChatListAdapter = new ChatListAdapter(this, CHATLIST);
-
-        mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, 1416867012, "salut", "Salut, comment ca va ?"));
-        mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, 0, "salut", "Très bien et toi :)"));
-        mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, 1416866413, "salut", "alors ta récuperer tes clés de voitures ?"));
-        mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, 1416866413, "salut", "Non toujours pas !"));
-        mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, 1416866413, "salut", "Ah ok"));
-
-        mMainContent.setAdapter(mChatListAdapter);*/
     }
 
     final AsyncTask<String, Void, String> Task = new AsyncTask<String, Void, String>()
