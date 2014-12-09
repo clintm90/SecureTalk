@@ -77,7 +77,7 @@ public class Search extends Activity
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
-        searchFromDatabase(".");
+        SearchFromDatabase(".");
 
         mResultContent = (ListView)findViewById(R.id.ResultContent);
         mSearchField = (EditText)findViewById(R.id.searchField);
@@ -90,7 +90,7 @@ public class Search extends Activity
             {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH)
                 {
-                    searchFromDatabase(mSearchField.getText().toString());
+                    SearchFromDatabase(mSearchField.getText().toString());
                 }
                 return true;
             }
@@ -106,7 +106,7 @@ public class Search extends Activity
         });
     }
 
-    public void searchFromDatabase(String query)
+    public void SearchFromDatabase(String query)
     {
         final ProgressDialog mDialog = ProgressDialog.show(this, "", getString(R.string.searching));
         mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -121,6 +121,8 @@ public class Search extends Activity
             @Override
             protected String doInBackground(String... params)
             {
+                Thread.currentThread().setName("SearchFromDatabase");
+
                 try
                 {
                     String rts = "", c;
@@ -282,7 +284,7 @@ public class Search extends Activity
                 }
                 else
                 {
-                    searchFromDatabase(mSearchField.getText().toString());
+                    SearchFromDatabase(mSearchField.getText().toString());
                 }
                 return true;
 
