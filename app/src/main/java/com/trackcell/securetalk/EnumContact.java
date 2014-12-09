@@ -11,6 +11,7 @@ public class EnumContact implements Serializable
     public boolean ArrowSelectable = false;
     public boolean isPaddingRight = true;
     public boolean isPhtoBW = false;
+    public boolean isSingleLine = false;
     public int PhotoVisibility = View.VISIBLE;
     public int ArrowVisibility = View.VISIBLE;
 
@@ -56,6 +57,12 @@ public class EnumContact implements Serializable
     public EnumContact bwPhoto()
     {
         isPhtoBW = true;
+        return this;
+    }
+
+    public EnumContact singleLine()
+    {
+        isSingleLine = true;
         return this;
     }
 }

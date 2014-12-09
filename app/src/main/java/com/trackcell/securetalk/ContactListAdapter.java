@@ -67,6 +67,11 @@ public class ContactListAdapter extends ArrayAdapter<EnumContact>
             contactListArrow.setImageDrawable(parent.getResources().getDrawable(R.drawable.ic_action_arrow_valid));
         }
 
+        if(values.get(position).isSingleLine)
+        {
+            contactListDescription.setMaxLines(1);
+        }
+
         rowView.setTag(values.get(position));
 
         return rowView;
