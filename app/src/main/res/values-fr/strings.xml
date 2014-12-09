@@ -1,5 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="about">A Propos de SecureTalk...</string>
+    <string name="app_name">SecureTalk</string>
+    <string name="appwelcome">Bienvenue dans SecureTalk</string>
+    <string name="noset">.</string>
+    <string name="action_menu_add">Ajouter un contact</string>
+    <string name="action_menu_more">Plus…</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="action_valid">Valider</string>
+    <string name="action_menu_joinpart">Joindre un fichier</string>
+    <string name="action_menu_send">Envoyer le message</string>
+    <string name="action_menu_save">Sauvegarder</string>
+    <string name="nocontact">Vous n\'avez aucun contact !</string>
+    <string name="contact">Contacts</string>
+    <string name="search">Rechercher</string>
+    <string name="searching">Recherche en cours...</string>
+    <string name="sending">Envoi...</string>
+    <string name="searchcontact">Rechercher un contact</string>
+    <string name="typemore">Soyez plus précis</string>
+    <string name="profile">Mon Profil</string>
+    <string name="newmesage">Vous avez un nouveau message.</string>
+    <string name="entermessage">Entrer un message...</string>
+    <string name="noconnection">Accès au réseau impossible !</string>
+    <string name="nosend">Impossible d\'envoyer le message !</string>
+    <string name="loading">Chargement en cours…</string>
+    <string name="valid">Accepter</string>
+    <string name="refuse">Refuser</string>
+    <string name="wouldelete">Voulez-vous vraiment supprimer ce contact ?</string>
+    <string name="showcontact">En savoir plus&#8230;</string>
+    <string name="deletecontact">Supprimer le contact</string>
+    <string name="cancel">Annuler</string>
+    <string name="no">Non</string>
+    <string name="yes">Oui</string>
+    <string name="register">Enregistrement&#8230;</string>
+    <string name="registeronline">Enregistrement en ligne...</string>
+    <string name="mail">Adresse mail</string>
+    <string name="name">Nom et Prénom</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="acceptlicense">J\'accepte les conditions d\'utilisation</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_chat">Chat</string>
+    <string name="title_activity_first_launch">FirstLaunch</string>
+    <string name="title_activity_activity_first_launch">ActivityFirstLaunch</string>
+    <string name="firstlaunch">PREMIER LANCEMENT</string>
+    <string name="userexist">Impossible de s\'enregistrer.</string>
+    <string name="title_activity_account">Account</string>
+    <string name="title_activity_parameters">Parameters</string>
+    <string name="title_activity_about">A Propos&#8230;</string>
+    <string name="about">A Propos de SecureTalk&#8230;</string>
+    <string name="about_value">C\'est une application gratuite qui vous permet de vous...</string>
+    <string name="nomessage">Il n\'y à pas de message</string>
 
 </resources>
