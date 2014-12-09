@@ -198,6 +198,7 @@ public class Chat extends Activity
         @Override
         protected void onPostExecute(String params)
         {
+            int i = 0;
             try
             {
                 JSONObject mRoot = new JSONObject(params);
@@ -206,14 +207,17 @@ public class Chat extends Activity
                 ChatListAdapter mChatListAdapter = new ChatListAdapter(getApplicationContext(), CHATLIST);
                 mChatListAdapter.clear();
 
-                for (int i = 0; i < mItems.getJSONArray("item").length(); i++)
+                for (i = 0; i < mItems.getJSONArray("item").length(); i++)
                 {
                     JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
 
                     mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, currentObject.getString("time"), null, RSADecrypt(currentObject.getString("content"))));
                 }
 
-                mNoMessages.setVisibility(View.INVISIBLE);
+                if(i > 0)
+                {
+                    mNoMessages.setVisibility(View.INVISIBLE);
+                }
 
                 mMainContent.setAdapter(mChatListAdapter);
             }
