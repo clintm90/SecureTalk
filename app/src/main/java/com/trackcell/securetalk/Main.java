@@ -34,7 +34,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
@@ -119,7 +118,7 @@ public class Main extends Activity
             mKeyPairGenerator = null;
         }
 
-        InitUser(false);
+        InitUser(false, null);
 
         //MessageWorkerLoop();
 
@@ -477,7 +476,7 @@ public class Main extends Activity
         Populate();
     }
 
-    public void InitUser(boolean registeringError)
+    public void InitUser(boolean registeringError, final String registeringErrorContent)
     {
         final ProgressDialog mDialog = ProgressDialog.show(this, "", getString(R.string.register));
         //mDialog.setProgressStyle(R.layout.model_register);
@@ -510,13 +509,11 @@ public class Main extends Activity
                     toReturn[5] = params[0].toString();
                     return toReturn;
                 }
-                catch (UnknownHostException e)
+                catch(UnknownHostException e)
                 {
-                    NetworkInfo networkinfo = mConnectivityManager.getActiveNetworkInfo();
-                    if (networkinfo == null || !networkinfo.isConnectedOrConnecting())
-                    {
+                    NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
+                    if(netInfo == null || !netInfo.isConnectedOrConnecting())
                         cancel(true);
-                    }
                     return null;
                 }
                 catch (Exception e)
@@ -531,7 +528,7 @@ public class Main extends Activity
             protected void onCancelled()
             {
                 mDialog.dismiss();
-                mWelcomeLabel.setText(getString(R.string.noconnection));
+                mWelcomeLabel.setText(registeringErrorContent);
                 mWelcomeLabel.setBackgroundColor(getResources().getColor(R.color.red));
             }
 
@@ -554,12 +551,12 @@ public class Main extends Activity
                     }
                     else
                     {
-                        InitUser(true);
+                        InitUser(true, getString(R.string.userexist));
                     }
                 }
                 catch (Exception e)
                 {
-                    Toast.makeText(getApplicationContext(), mPrefsGlobal.getAll().toString(), Toast.LENGTH_LONG).show();
+                    InitUser(true, getString(R.string.cancel));
                 }
             }
         };

@@ -8,15 +8,15 @@ android {
 
     def versionPropsFile = file('version.properties')
 
-        def Properties versionProps = new Properties()
-        versionProps.load(new FileInputStream(versionPropsFile))
+    def Properties versionProps = new Properties()
+    versionProps.load(new FileInputStream(versionPropsFile))
 
-        def runTasks = gradle.startParameter.taskNames
-        def versionBuild = versionProps['VERSION_BUILD'].toInteger() + 1
+    def runTasks = gradle.startParameter.taskNames
+    def versionBuild = versionProps['VERSION_BUILD'].toInteger() + 1
 
-        versionProps['VERSION_BUILD'] = versionBuild.toString()
+    versionProps['VERSION_BUILD'] = versionBuild.toString()
 
-        versionProps.store(versionPropsFile.newWriter(), null)
+    versionProps.store(versionPropsFile.newWriter(), null)
 
     defaultConfig {
         applicationId "com.trackcell.securetalk"
@@ -41,6 +41,6 @@ dependencies {
     compile files('libs/commons-codec-1.9.jar')
     compile files('libs/commons-codec-1.10.jar')
     compile files('libs/jgravatar-1.0.jar')
-    compile 'com.android.support:support-v4:20.0.0'
     compile files('libs/gson-2.3.1.jar')
+    compile 'com.android.support:support-v4:20.0.0'
 }

@@ -10,27 +10,36 @@ public class RC4
         byte[] clearText_;
         byte[] cipherText;
         int[] returnText = new int[clearText.length()];
-        try {
+        try
+        {
             Cipher rc4 = Cipher.getInstance("RC4");
             SecretKeySpec rc4Key = new SecretKeySpec(key.getBytes("ASCII"), "RC4");
             rc4.init(Cipher.ENCRYPT_MODE, rc4Key);
             cipherText = rc4.update(clearText.getBytes("ASCII"));
             int counter = 0;
-            while (counter < cipherText.length) {
+            while (counter < cipherText.length)
+            {
                 returnText[counter] = cipherText[counter];
                 counter++;
             }
             return returnText;
-        } catch (Exception e) { return null; }
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 
-    public String decrypt ( int[] ciphertext, String key ) {
+    public String decrypt(int[] ciphertext, String key)
+    {
         byte[] clearText;
         byte[] cipherText = new byte[ciphertext.length];
-        try {
+        try
+        {
             int counter = 0;
-            while (counter < ciphertext.length) {
-                cipherText[counter] = (byte)ciphertext[counter];
+            while (counter < ciphertext.length)
+            {
+                cipherText[counter] = (byte) ciphertext[counter];
                 counter++;
             }
             Cipher rc4 = Cipher.getInstance("RC4");
@@ -39,7 +48,11 @@ public class RC4
             clearText = rc4.update(cipherText);
             System.out.println(new String(clearText, "ASCII"));
             return new String(clearText, "ASCII");
-        } catch (Exception e) { return ""; }
+        }
+        catch (Exception e)
+        {
+            return "";
+        }
 
     }
 
