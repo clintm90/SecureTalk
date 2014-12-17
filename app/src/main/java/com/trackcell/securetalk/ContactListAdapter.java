@@ -29,7 +29,6 @@ public class ContactListAdapter extends ArrayAdapter<EnumContact>
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View rowView = inflater.inflate(R.layout.model_contactlist, parent, false);
-        rowView.setTag(values.get(position));
 
         final ImageView contactListIcon = (ImageView)rowView.findViewById(R.id.model_contactList_icon);
         TextView contactListTitle = (TextView)rowView.findViewById(R.id.model_contactList_title);
@@ -42,7 +41,7 @@ public class ContactListAdapter extends ArrayAdapter<EnumContact>
 
         if(values.get(position).PhotoVisibility == View.VISIBLE)
         {
-            Main.LoadGravatar(mContext, contactListIcon, values.get(position).ID, values.get(position).isPhtoBW);
+            Landing.LoadGravatar(mContext, contactListIcon, values.get(position).ID, values.get(position).isPhtoBW);
         }
 
         //if(values.get(position).Bold)

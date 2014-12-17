@@ -8,7 +8,4 @@
         android:onClick="Rate"
         android:showAsAction="always" />
 
-    <item android:id="@+id/action_test"
-          android:title="Test"
-          android:showAsAction="always" />
 </menu>

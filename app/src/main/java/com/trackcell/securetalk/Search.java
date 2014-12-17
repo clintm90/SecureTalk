@@ -143,7 +143,7 @@ public class Search extends Activity
                 catch(Exception e)
                 {
                     e.printStackTrace();
-                    return null;
+                    return e.getMessage();
                 }
             }
 

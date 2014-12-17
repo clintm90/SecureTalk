@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/appwelcome"
-        android:id="@+id/welcomeLabel"
+        android:id="@+id/WelcomeLabel"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:textAlignment="center"
@@ -18,14 +18,43 @@
         android:textColor="@color/darkgrey"
         android:background="@color/grey" />
 
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/MainContainer"
+        android:listSelector="@drawable/list_selector"
+        android:layout_centerHorizontal="true"
+        android:divider="@color/lightmiddlegrey"
+        android:dividerHeight="1dp"
+        tools:listitem="@layout/model_contactlist"
+        android:layout_below="@+id/WelcomeLabel"/>
+
     <TextView
-        android:id="@+id/section_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="salut"
+        android:text="@string/nocontact"
+        android:id="@+id/noContact"
         android:layout_below="@+id/welcomeLabel"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp"/>
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
+        android:layout_marginTop="30dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action_menu_add"
+        android:id="@+id/noContactButton"
+        android:layout_below="@+id/noContact"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:singleLine="false"
+        android:visibility="invisible"
+        android:drawablePadding="5dp"
+        style="@android:style/TextAppearance.Holo.Widget.Button"
+        android:maxHeight="30dp"
+        android:background="@color/blue_translucid"
+        android:textColor="@color/white"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"/>
 
 </RelativeLayout>

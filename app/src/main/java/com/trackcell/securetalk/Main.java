@@ -1,7 +1,7 @@
 // Decompiled by Jad v1.5.8e. Copyright 2001 Pavel Kouznetsov.
 // Jad home page: http://www.geocities.com/kpdus/jad.html
 // Decompiler options: braces fieldsfirst space lnc
-
+/*
 package com.trackcell.securetalk;
 
 import android.accounts.Account;
@@ -66,7 +66,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 
-public class Main extends Activity
+public class oldMain extends Activity
 {
     private ConnectivityManager mConnectivityManager;
     private PhoneNumberUtil mPhoneUtil;
@@ -212,7 +212,7 @@ public class Main extends Activity
         });
     }*/
 
-    public static void LoadGravatar(final Context context, final ImageView imageView, String id, final boolean isPhotoBW)
+    /*public static void LoadGravatar(final Context context, final ImageView imageView, String id, final boolean isPhotoBW)
     {
         final AsyncTask<String, Void, Bitmap> GravatarTask = new AsyncTask<String, Void, Bitmap>()
         {
@@ -259,7 +259,7 @@ public class Main extends Activity
                 }
             }
         };
-        GravatarTask.execute(id);
+        GravatarTask.execute(id);*/
 
         //region old gravatar task
         /*(new AsyncTask(s, imageview, flag, context) {
@@ -330,7 +330,7 @@ public class Main extends Activity
                 s
         });*/
         //endregion
-    }
+    /*}
 
     public static void BWImageView(boolean execute, ImageView imageView, float level)
     {
@@ -613,7 +613,7 @@ public class Main extends Activity
             {
                 e.printStackTrace();
             }
-        }
+        }*/
 
         //region old task
         /*final AsyncTask MainTask = new AsyncTask() {
@@ -759,7 +759,7 @@ public class Main extends Activity
         }
         Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();*/
         //endregion
-    }
+    /*}
 
     public void MessageWorkerLoop()
     {
@@ -906,4 +906,4 @@ public class Main extends Activity
     {
         super.onStop();
     }
-}
+}*/

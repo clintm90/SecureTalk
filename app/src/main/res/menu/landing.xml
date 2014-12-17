@@ -5,6 +5,7 @@
     <item android:id="@+id/action_menu_add"
           android:title="@string/action_menu_add"
           android:icon="@drawable/ic_action_add"
+          android:onClick="GotoSearch"
           android:showAsAction="always" />
 
     <item android:id="@+id/action_menu_more"
@@ -14,17 +15,20 @@
         <menu>
             <item android:id="@+id/action_"
                   android:title="A Propos..."
+                  android:onClick="GotoAbout"
                   android:icon="@drawable/ic_action_about"
                   android:showAsAction="always" />
 
             <item android:id="@+id/action_profile"
                   android:title="@string/profile"
                   android:icon="@drawable/ic_action_profile"
+                  android:onClick="GotoProfile"
                   android:showAsAction="always" />
 
             <item android:id="@+id/action_settings"
                   android:title="@string/action_settings"
                   android:icon="@drawable/ic_action_parameters"
+                  android:onClick="GotoParameters"
                   android:showAsAction="always" />
         </menu>
     </item>
