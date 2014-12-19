@@ -11,7 +11,6 @@ import java.util.List;
 
 public class NavigationDrawerAdapter extends ArrayAdapter<EnumNavigationDrawer>
 {
-
     private final Context mContext;
     private final List<EnumNavigationDrawer> values;
 

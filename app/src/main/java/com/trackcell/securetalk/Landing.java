@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
-import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONException;
@@ -42,27 +41,20 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
-import java.util.Map;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 
 public class Landing extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {
+    private DBSecureTalk mDBSecureTalk;
+
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
     private ConnectivityManager mConnectivityManager;
@@ -89,6 +81,9 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        mDBSecureTalk = new DBSecureTalk(getApplicationContext(), "SecureTalk.db", null, 1, null);
+        mDBSecureTalk.onCreate(mDBSecureTalk.getWritableDatabase());
 
         mConnectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -140,20 +135,24 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         final String mAccountsMailID = new String(Hex.encodeHex(DigestUtils.md5(aaccount[0].name)));
         if (mAccountsMailID.length() > 0 && aaccount[0].name.contains("@"))
         {
-            AsyncTask<String, Void, String> InitUserTask = new AsyncTask<String, Void, String>()
+            AsyncTask<Object, Void, Object[]> InitUserTask = new AsyncTask<Object, Void, Object[]>()
             {
                 @Override
-                protected String doInBackground(String... params)
+                protected Object[] doInBackground(Object... params)
                 {
                     try
                     {
+                        Object[] mRTS = new Object[3];
                         String rts = "", c;
                         URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id="+ params[0].toString() + "&put=false");
                         BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
 
                         while ((c = reader.readLine()) != null)
                             rts += c;
-                        return rts;
+                        mRTS[0] = rts;
+                        mRTS[1] = params[1];
+                        mRTS[2] = params[0];
+                        return mRTS;
                     }
                     catch(UnknownHostException e)
                     {
@@ -177,16 +176,25 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                 }
 
                 @Override
-                protected void onPostExecute(String input)
+                protected void onPostExecute(Object[] input)
                 {
                     alertDialog.dismiss();
                     try
                     {
-                        JSONObject registerValue = new JSONObject(input);
+                        JSONObject registerValue = new JSONObject(input[0].toString());
+                        String mPublicKey = new String(Hex.encodeHex(mKP.getPublic().getEncoded()));
+                        String mPrivateKey = new String(Hex.encodeHex(mKP.getPrivate().getEncoded()));
                         if (registerValue.getInt("response") == 1)
                         {
-                            //mStorageGlobal.putBoolean("initialized", true);
-                            //mStorageGlobal.apply();
+                            mStorageGlobal.putBoolean("initialized", true);
+                            mStorageGlobal.putString("owner", input[2].toString());
+                            /*if(registerValue.getString("public_key") != mPublicKey)
+                            {
+                                //Update mPublicKey to database
+                                mStorageGlobal.putString("public_key", mPublicKey);
+                                mStorageGlobal.putString("private_key", mPrivateKey);
+                            }*/
+                            mStorageGlobal.apply();
                         }
                         else
                         {
@@ -244,13 +252,14 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                     builder.show();
                 }
             };
-            if(mPrefsGlobal.getBoolean("initialized", false))
+            if (mPrefsGlobal.getBoolean("initialized", false) && !mPrefsGlobal.getString("owner", "none").equals("none") && !mPrefsGlobal.getString("private_key", "none").equals("none"))
             {
-                InitUserTask.execute(mPrefsGlobal.getString("owner", "none"));
+                InitUserTask.execute(mPrefsGlobal.getString("owner", "none"), mKP);
             }
             else
             {
-                InitUserTask.execute(mAccountsMailID);
+                mKP = mKeyPairGenerator.generateKeyPair();
+                InitUserTask.execute(mAccountsMailID, mKP);
             }
         }
         else
@@ -440,7 +449,8 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         }
     }
 
-    public boolean DeleteContact(View view, final String id)
+    //region DeleteContact()
+    /*public boolean DeleteContact(View view, final String id)
     {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         try
@@ -460,13 +470,13 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                 switch(which)
                 {
                     case 0:
-                        Populate();
+                        //Populate();
                         break;
 
                     case 1:
                         mStorage.remove(id);
                         mStorage.apply();
-                        Populate();
+                        //Populate();
                         break;
                 }
             }
@@ -481,16 +491,19 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         });
         alertDialog.show();
         return false;
-    }
+    }*/
+    //endregion
 
-    public void GotoChat(View view)
+    //region GotoChat()
+    /*public void GotoChat(View view)
     {
         Intent intent = new Intent(this, Chat.class);
         intent.putExtra("contact", ((EnumContact)view.getTag()).Name);
         intent.putExtra("public_key", ((EnumContact)view.getTag()).PublicKey);
         intent.putExtra("recipient", ((EnumContact)view.getTag()).ID);
         AutorizeActivityLaunch(intent, 1);
-    }
+    }*/
+    //endregion
 
     public void GotoParameters(MenuItem menuitem)
     {
@@ -520,7 +533,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         //setContentView(0x7f030002);
         mStorageGlobal.putString("first_launch", "ok");
         mStorageGlobal.apply();
-        Populate();
+        //Populate();
     }
 
     //region old init user
@@ -665,20 +678,21 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
     }*/
     //endregion
 
-    public void Populate()
+    //region Populate()
+    /*public void Populate()
     {
         final ContactListAdapter mContactListAdapter = new ContactListAdapter(this, CONTACTLIST);
 
         mContactListAdapter.clear();
 
-        mContactListAdapter.add((new EnumContact(getApplicationContext(), "785b86f1ea73414d6c0493b2411421ba", "Clint Mourlevat", "Pas de nouveau message", mPrefsGlobal.getString("public_key", "none"), false)).bwPhoto());
+        mContactListAdapter.add((new EnumContact(getApplicationContext(), -1, "785b86f1ea73414d6c0493b2411421ba", "Clint Mourlevat", "Pas de nouveau message", mPrefsGlobal.getString("public_key", "none"), false)).bwPhoto());
 
         for(Map.Entry<String, ?> current : mPrefs.getAll().entrySet())
         {
             try
             {
                 JSONObject json = new JSONObject(current.getValue().toString());
-                mContactListAdapter.add(new EnumContact(getApplicationContext(), current.getKey(), json.getString("name"), json.getString("description"), json.getString("public_key"), false).bwPhoto().singleLine());
+                mContactListAdapter.add(new EnumContact(getApplicationContext(), -1, current.getKey(), json.getString("name"), json.getString("description"), json.getString("public_key"), false).bwPhoto().singleLine());
             }
             catch (JSONException e)
             {
@@ -696,10 +710,11 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         {
             findViewById(R.id.noContact).setVisibility(View.VISIBLE);
         }
-    }
+    }*/
+    //endregion
 
     //region RSA Encrypt & Decrypt
-    public String RSAEncrypt(String value) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException, DecoderException
+    /*public String RSAEncrypt(String value) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException, DecoderException
     {
         X509EncodedKeySpec spec = new X509EncodedKeySpec(Hex.decodeHex(new String(getIntent().getStringExtra("public_key")).toCharArray()));
 
@@ -717,7 +732,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         byte[] stringBytes = Hex.decodeHex(value.toCharArray());
         byte[] decryptedBytes = mCipher.doFinal(stringBytes);
         return new String(decryptedBytes,"UTF-8");
-    }
+    }*/
     //endregion
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -728,8 +743,9 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                 if(data.getExtras().getBoolean("callback"))
                 {
                     EnumContact enumcontact = (EnumContact)data.getExtras().getSerializable("contact");
-                    mStorage.putString(enumcontact.ID, "{'id':'"+enumcontact.ID+"', 'name':'"+enumcontact.Name+"', 'public_key':'"+enumcontact.PublicKey+"', 'description':'"+enumcontact.Description+"'}");
-                    mStorage.apply();
+                    mDBSecureTalk.NewElement(enumcontact.ID, enumcontact.Name, enumcontact.Description, enumcontact.PublicKey);
+                    //mStorage.putString(enumcontact.ID, "{'id':'"+enumcontact.ID+"', 'name':'"+enumcontact.Name+"', 'public_key':'"+enumcontact.PublicKey+"', 'description':'"+enumcontact.Description+"'}");
+                    //mStorage.apply();
                 }
                 break;
 
@@ -755,6 +771,10 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
             default:
                 break;
         }
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, PlaceholderFragment.newInstance(1))
+                .commit();
 
         super.onActivityResult(requestCode, resultCode, data);
     }

@@ -14,12 +14,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Map;
-
 public class PlaceholderFragment extends Fragment
 {
     private SharedPreferences mPrefs;
@@ -46,6 +40,8 @@ public class PlaceholderFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        final DBSecureTalk mDBSecureTalk = new DBSecureTalk(getActivity().getApplicationContext(), "SecureTalk.db", null, 1, null);
+
         mPrefs = getActivity().getSharedPreferences("securetalk_elements", getActivity().MODE_APPEND);
         mStorage = mPrefs.edit();
 
@@ -58,25 +54,9 @@ public class PlaceholderFragment extends Fragment
                 View rootView = inflater.inflate(R.layout.fragment_landing, container, false);
                 mMainContent = (ListView)rootView.findViewById(R.id.MainContainer);
 
-                final ArrayList<EnumContact> CONTACTLIST = new ArrayList<EnumContact>();
-                final ContactListAdapter mContactListAdapter = new ContactListAdapter(getActivity().getApplicationContext(), CONTACTLIST);
+                final ContactListAdapter mContactListAdapter = new ContactListAdapter(getActivity().getApplicationContext(), mDBSecureTalk.GetElements());
 
-                mContactListAdapter.clear();
-
-                mContactListAdapter.add((new EnumContact(getActivity().getApplicationContext(), "785b86f1ea73414d6c0493b2411421ba", "Clint Mourlevat", "Pas de nouveau message", "78", false)).bwPhoto());
-
-                for(Map.Entry<String, ?> current : mPrefs.getAll().entrySet())
-                {
-                    try
-                    {
-                        JSONObject json = new JSONObject(current.getValue().toString());
-                        mContactListAdapter.add(new EnumContact(getActivity().getApplicationContext(), current.getKey(), json.getString("name"), json.getString("description"), json.getString("public_key"), false).bwPhoto().singleLine());
-                    }
-                    catch (JSONException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
+                mContactListAdapter.add((new EnumContact(getActivity().getApplicationContext(), -1, "785b86f1ea73414d6c0493b2411421ba", "Clint Mourlevat", "Pas de nouveau message", "78", false)).bwPhoto());
 
                 mMainContent.setAdapter(mContactListAdapter);
 
@@ -99,7 +79,11 @@ public class PlaceholderFragment extends Fragment
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
                     {
-                        //return Landing.DeleteContact(view, ((EnumContact)view.getTag()).ID);
+                        mDBSecureTalk.RemoveElement(((EnumContact)view.getTag()).RowID);
+
+                        getFragmentManager().beginTransaction()
+                                .replace(R.id.container, PlaceholderFragment.newInstance(1))
+                                .commit();
                         return false;
                     }
                 });

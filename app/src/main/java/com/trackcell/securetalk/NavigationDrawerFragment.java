@@ -71,10 +71,11 @@ public class NavigationDrawerFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-        mDrawerListView = (ListView) rootView.findViewById(R.id.list);
+        mDrawerListView = (ListView) rootView.findViewById(R.id.fragment_navigation_drawer_list);
 
         List<EnumNavigationDrawer> NAVIGATIONDRAWERLIST = new ArrayList<EnumNavigationDrawer>();
 
+        mDrawerListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         NavigationDrawerAdapter mNavigationDrawerAdapter = new NavigationDrawerAdapter(this.getActivity(), NAVIGATIONDRAWERLIST);
 
         mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Inviter des contacts"));

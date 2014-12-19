@@ -15,6 +15,8 @@ public class About extends Activity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_about);
+
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }
 
     public void Rate(MenuItem item)

@@ -2,27 +2,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.trackcell.securetalk.NavigationDrawerFragment">
+    tools:context="com.trackcell.securetalk.NavigationDrawerFragment"
+    android:background="@android:color/white">
 
     <ListView
-        android:id="@+id/list"
+        android:id="@+id/fragment_navigation_drawer_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:choiceMode="singleChoice"
         android:divider="#EEEEEE"
         android:dividerHeight="1dp"
-        android:background="@android:color/white"
         android:listSelector="@drawable/balloon"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        android:layout_below="@+id/fragment_navigation_drawer_photo"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SecureTalk 1.1.138"
-        android:id="@+id/textView"
+        android:id="@+id/fragment_navigation_drawer_about"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="12dp"
         android:textColor="@color/grey"/>
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/fragment_navigation_drawer_photo"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/me"
+        android:layout_alignParentEnd="false"
+        android:contentDescription="Avatar"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:gravity="left|center"
+        android:text="Clint Mourlevat"
+        android:id="@+id/fragment_navigation_drawer_name"
+        android:layout_toEndOf="@+id/fragment_navigation_drawer_photo"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/fragment_navigation_drawer_about"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="19sp"
+        android:padding="5dp"
+        android:background="@drawable/background_border_bottom"
+        />
 
 </RelativeLayout>

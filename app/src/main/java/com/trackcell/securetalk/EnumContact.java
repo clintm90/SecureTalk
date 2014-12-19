@@ -15,6 +15,7 @@ public class EnumContact implements Serializable
     public int PhotoVisibility = View.VISIBLE;
     public int ArrowVisibility = View.VISIBLE;
 
+    public int RowID;
     public String ID;
     public String Name;
     public Drawable Photo;
@@ -22,9 +23,10 @@ public class EnumContact implements Serializable
     public String PublicKey;
     public boolean Bold;
 
-    public EnumContact(Context context, String id, String name, String description, String publicKey, boolean bold)
+    public EnumContact(Context context, int rowID, String gravatarID, String name, String description, String publicKey, boolean bold)
     {
-        ID = id;
+        RowID = rowID;
+        ID = gravatarID;
         Name = name;
         Description = description;
         PublicKey = publicKey;
