@@ -2,10 +2,15 @@ package com.trackcell.securetalk;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +18,9 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlaceholderFragment extends Fragment
 {
@@ -48,11 +56,11 @@ public class PlaceholderFragment extends Fragment
         mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         mStorageGlobal = mPrefsGlobal.edit();
 
-        switch(getArguments().getInt(ARG_SECTION_NUMBER))
+        switch (getArguments().getInt(ARG_SECTION_NUMBER))
         {
             case 1:
                 View rootView = inflater.inflate(R.layout.fragment_landing, container, false);
-                mMainContent = (ListView)rootView.findViewById(R.id.MainContainer);
+                mMainContent = (ListView) rootView.findViewById(R.id.MainContainer);
 
                 final ContactListAdapter mContactListAdapter = new ContactListAdapter(getActivity().getApplicationContext(), mDBSecureTalk.GetElements());
 
@@ -79,7 +87,7 @@ public class PlaceholderFragment extends Fragment
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
                     {
-                        mDBSecureTalk.RemoveElement(((EnumContact)view.getTag()).RowID);
+                        mDBSecureTalk.RemoveElement(((EnumContact) view.getTag()).RowID);
 
                         getFragmentManager().beginTransaction()
                                 .replace(R.id.container, PlaceholderFragment.newInstance(1))
@@ -88,6 +96,83 @@ public class PlaceholderFragment extends Fragment
                     }
                 });
                 return rootView;
+
+            case 2:
+                View rootViewInvite = inflater.inflate(R.layout.fragment_invite, container, false);
+                final ListView mInviteList = (ListView) rootViewInvite.findViewById(R.id.fragment_invite_list);
+
+                final ProgressDialog alertDialog = ProgressDialog.show(getActivity(), "", getString(R.string.loading));
+                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                alertDialog.setCancelable(true);
+                alertDialog.show();
+
+                final List<EnumContact> INVITELIST = new ArrayList<EnumContact>();
+
+                AsyncTask<Void, Void, ContactListAdapter> Task = new AsyncTask<Void, Void, ContactListAdapter>()
+                {
+                    @Override
+                    protected ContactListAdapter doInBackground(Void... params)
+                    {
+                        try
+                        {
+                            final ContactListAdapter mInviteListAdapter = new ContactListAdapter(getActivity().getApplicationContext(), INVITELIST);
+                            final Cursor mPeoples = getActivity().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+                            while (mPeoples.moveToNext())
+                            {
+                                String id = mPeoples.getString(mPeoples.getColumnIndex(ContactsContract.Contacts._ID));
+                                String name = mPeoples.getString(mPeoples.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
+                                Cursor emailCur = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{id}, null);
+                                while (emailCur.moveToNext())
+                                {
+                                    String email = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                                    //String gravatarID = new String(Hex.encodeHex(DigestUtils.md5(email)));
+                                    mInviteListAdapter.add((new EnumContact(getActivity().getApplicationContext(), -1, email, name, email, null, false)).hideArrow().hidePhoto().singleLine());
+                                }
+                                emailCur.close();
+                            }
+                            return mInviteListAdapter;
+                        }
+                        catch(Exception e)
+                        {
+                            cancel(true);
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected void onCancelled()
+                    {
+                        alertDialog.dismiss();
+                    }
+
+                    @Override
+                    protected void onPostExecute(ContactListAdapter contactListAdapter)
+                    {
+                        alertDialog.dismiss();
+                        mInviteList.setAdapter(contactListAdapter);
+                    }
+                };
+                Task.execute();
+
+                mInviteList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
+                    }
+                });
+
+                return rootViewInvite;
+
+            case 3:
+                View rootViewDonation = inflater.inflate(R.layout.fragment_donation, container, false);
+                //final ListView mInviteList = (ListView) rootViewInvite.findViewById(R.id.fragment_invite_list);
+                return rootViewDonation;
+
+            case 4:
+                View rootViewAbout = inflater.inflate(R.layout.fragment_about_app, container, false);
+                return rootViewAbout;
 
             default:
                 return null;

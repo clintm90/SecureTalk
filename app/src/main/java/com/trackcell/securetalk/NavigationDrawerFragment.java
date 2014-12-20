@@ -78,9 +78,10 @@ public class NavigationDrawerFragment extends Fragment
         mDrawerListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         NavigationDrawerAdapter mNavigationDrawerAdapter = new NavigationDrawerAdapter(this.getActivity(), NAVIGATIONDRAWERLIST);
 
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Accueil"));
         mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Inviter des contacts"));
-        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "salut"));
-        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Fermer"));
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Faire un don"));
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "A Propos..."));
 
         mDrawerListView.setAdapter(mNavigationDrawerAdapter);
 

@@ -93,9 +93,6 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mStorageGlobal = mPrefsGlobal.edit();
 
-        mPrefs = getSharedPreferences("securetalk_elements", MODE_APPEND);
-        mStorage = mPrefs.edit();
-
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
         {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);

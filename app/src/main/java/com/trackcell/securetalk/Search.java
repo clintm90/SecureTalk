@@ -176,7 +176,7 @@ public class Search extends Activity
                     {
                         JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
                         if(!mPrefsGlobal.getString("owner", "none").equals(currentObject.getString("id")))
-                            mContactList.add(new EnumContact(getApplicationContext(), -1, currentObject.getString("id"), currentObject.getString("name"), currentObject.getString("description"), currentObject.getString("public_key"), false).hideArrow().bwPhoto());
+                            mContactList.add(new EnumContact(getApplicationContext(), -1, currentObject.getString("id"), currentObject.getString("name"), currentObject.getString("description"), currentObject.getString("public_key"), false).hideArrow().bwPhoto().singleLine());
                         mResultContent.setAdapter(mSearchListAdapter);
                     }
                 }

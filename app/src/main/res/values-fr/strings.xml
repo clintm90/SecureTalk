@@ -23,7 +23,7 @@
     <string name="entermessage">Entrer un message...</string>
     <string name="noconnection">Accès au réseau impossible !</string>
     <string name="nosend">Impossible d\'envoyer le message !</string>
-    <string name="loading">Chargement en cours…</string>
+    <string name="loading">Chargement en cours&#8230;</string>
     <string name="valid">Accepter</string>
     <string name="refuse">Refuser</string>
     <string name="wouldelete">Voulez-vous vraiment supprimer ce contact ?</string>
