@@ -51,6 +51,10 @@ import java.util.ArrayList;
 
 import javax.crypto.Cipher;
 
+import de.bripkens.gravatar.DefaultImage;
+import de.bripkens.gravatar.Gravatar;
+import de.bripkens.gravatar.Rating;
+
 public class Landing extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {
     private DBSecureTalk mDBSecureTalk;
@@ -297,7 +301,8 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
 
                 try
                 {
-                    httpURLConnection = (HttpURLConnection)(new URL("http://www.gravatar.com/avatar/" + params[0] + "?s=80&d=mm")).openConnection();
+                    String GravatarImageURL = new Gravatar().setSize(80).setHttps(true).setRating(Rating.GENERAL_AUDIENCE).setStandardDefaultImage(DefaultImage.MONSTER).getUrl(params[0]);
+                    httpURLConnection = (HttpURLConnection)(new URL(GravatarImageURL)).openConnection();
                     return BitmapFactory.decodeStream(httpURLConnection.getInputStream(), null, new BitmapFactory.Options());
                 }
                 catch(UnknownHostException e)
