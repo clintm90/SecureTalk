@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,6 +19,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +62,7 @@ public class NavigationDrawerFragment extends Fragment
             mFromSavedInstanceState = true;
         }
 
-        selectItem(mCurrentSelectedPosition);
+        SwitchToFragmentByNumber(mCurrentSelectedPosition);
     }
 
     @Override
@@ -72,16 +77,33 @@ public class NavigationDrawerFragment extends Fragment
     {
         View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView = (ListView) rootView.findViewById(R.id.fragment_navigation_drawer_list);
+        TextView mVersion = (TextView) rootView.findViewById(R.id.fragment_navigation_drawer_about);
+        TextView mName = (TextView) rootView.findViewById(R.id.fragment_navigation_drawer_name);
+        AdView mAdView = (AdView) rootView.findViewById(R.id.fragment_navigation_drawer_adview);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        try
+        {
+            String versionName = getActivity().getApplicationContext().getPackageManager().getPackageInfo(getActivity().getApplicationContext().getPackageName(), 0).versionName;
+            mVersion.setText("SecureTalk " + versionName);
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            e.printStackTrace();
+        }
 
         List<EnumNavigationDrawer> NAVIGATIONDRAWERLIST = new ArrayList<EnumNavigationDrawer>();
 
         mDrawerListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         NavigationDrawerAdapter mNavigationDrawerAdapter = new NavigationDrawerAdapter(this.getActivity(), NAVIGATIONDRAWERLIST);
 
-        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Accueil"));
-        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Inviter des contacts"));
-        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Faire un don"));
-        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "A Propos..."));
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Accueil", getResources().getDrawable(R.drawable.ic_action_home)));
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Inviter des contacts", getResources().getDrawable(R.drawable.ic_action_user2b)));
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Faire un don", getResources().getDrawable(R.drawable.ic_action_likeb)));
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Options", getResources().getDrawable(R.drawable.ic_action_parametersb)));
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "A Propos...", getResources().getDrawable(R.drawable.ic_action_infob)));
 
         mDrawerListView.setAdapter(mNavigationDrawerAdapter);
 
@@ -90,19 +112,9 @@ public class NavigationDrawerFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                selectItem(position);
+                SwitchToFragmentByNumber(position);
             }
         });
-
-        /*mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
-                }));*/
 
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return rootView;
@@ -182,7 +194,7 @@ public class NavigationDrawerFragment extends Fragment
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    private void selectItem(int position)
+    private void SwitchToFragmentByNumber(int position)
     {
         mCurrentSelectedPosition = position;
         if (mDrawerListView != null)

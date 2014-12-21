@@ -38,6 +38,10 @@ public class ChatListAdapter extends ArrayAdapter<EnumChat>
         chatListTitle.setText(values.get(position).Title);
         chatListTimestamp.setText(values.get(position).Timestamp);
 
+        if(values.get(position).isPhoto)
+        {
+        }
+
         if(values.get(position).Error)
         {
             chatListOther.setImageDrawable(parent.getResources().getDrawable(R.drawable.ic_info_error));

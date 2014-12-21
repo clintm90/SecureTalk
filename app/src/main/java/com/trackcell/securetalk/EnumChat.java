@@ -6,6 +6,7 @@ public class EnumChat
 {
     public boolean isMe;
     public boolean Error;
+    public boolean isPhoto = false;
 
     public String Timestamp;
     public String ID;
@@ -20,5 +21,11 @@ public class EnumChat
         Title = title;
         Content = "salut";
         Timestamp = timestamp;
+    }
+
+    public EnumChat putPhoto(String bitmap)
+    {
+        isPhoto = true;
+        return this;
     }
 }

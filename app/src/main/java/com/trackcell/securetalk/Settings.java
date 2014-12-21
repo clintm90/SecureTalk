@@ -11,12 +11,12 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Donation.OnFragmentInteractionListener} interface
+ * {@link Settings.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Donation#newInstance} factory method to
+ * Use the {@link Settings#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Donation extends Fragment
+public class Settings extends Fragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,12 +35,12 @@ public class Donation extends Fragment
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Donation.
+     * @return A new instance of fragment Settings.
      */
     // TODO: Rename and change types and number of parameters
-    public static Donation newInstance(String param1, String param2)
+    public static Settings newInstance(String param1, String param2)
     {
-        Donation fragment = new Donation();
+        Settings fragment = new Settings();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -48,7 +48,7 @@ public class Donation extends Fragment
         return fragment;
     }
 
-    public Donation()
+    public Settings()
     {
         // Required empty public constructor
     }
@@ -67,8 +67,7 @@ public class Donation extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_donation, container, false);
-        //https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=clint%2emourlevat%40gmail%2ecom&lc=US&item_name=ds&item_number=ds&no_note=0&currency_code=USD&bn=PP-DonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
+        View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
         return rootView;
     }
 
@@ -103,8 +102,19 @@ public class Donation extends Fragment
         mListener = null;
     }
 
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
     public interface OnFragmentInteractionListener
     {
+        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
 

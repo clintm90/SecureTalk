@@ -14,9 +14,12 @@ import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -43,6 +46,12 @@ public class PlaceholderFragment extends Fragment
 
     public PlaceholderFragment()
     {
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -167,10 +176,31 @@ public class PlaceholderFragment extends Fragment
 
             case 3:
                 View rootViewDonation = inflater.inflate(R.layout.fragment_donation, container, false);
-                //final ListView mInviteList = (ListView) rootViewInvite.findViewById(R.id.fragment_invite_list);
+                final ProgressBar mProgress = (ProgressBar)rootViewDonation.findViewById(R.id.fragment_donation_progress);
+                WebView mWebView = (WebView)rootViewDonation.findViewById(R.id.donationWebView);
+                mWebView.setWebViewClient(new WebViewClient());/*
+                {
+                    @Override
+                    public void onPageStarted(WebView view, String url, Bitmap favicon)
+                    {
+                        super.onPageStarted(view, url, favicon);
+                    }
+
+                    @Override
+                    public void onPageFinished(WebView view, String url)
+                    {
+                        mProgress.setVisibility(View.INVISIBLE);
+                    }
+                });*/
+                mWebView.getSettings().setJavaScriptEnabled(true);
+                mWebView.loadUrl("https://www.paypal.com/cgi-bin/webscr?cmd=_donations" + "&business=clint%2emourlevat%40gmail%2ecom" + "&lc=FR" + "&item_name=ds" + "&item_number=ds" + "&no_note=0" + "&currency_code=EUR" + "&bn=PP-DonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest");
                 return rootViewDonation;
 
             case 4:
+                View rootViewSettings = inflater.inflate(R.layout.fragment_settings, container, false);
+                return rootViewSettings;
+
+            case 5:
                 View rootViewAbout = inflater.inflate(R.layout.fragment_about_app, container, false);
                 return rootViewAbout;
 

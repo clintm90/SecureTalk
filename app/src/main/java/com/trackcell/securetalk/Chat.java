@@ -5,11 +5,15 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +31,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -68,12 +73,12 @@ public class Chat extends Activity
     {
         super.onCreate(savedInstanceState);
 
-        mConnectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mStorageGlobal = mPrefsGlobal.edit();
 
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
         {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         }
@@ -86,7 +91,7 @@ public class Chat extends Activity
             mKP = mKeyPairGenerator.generateKeyPair();
             mKeyFactory = KeyFactory.getInstance("RSA");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             mKeyPairGenerator = null;
         }
@@ -97,9 +102,12 @@ public class Chat extends Activity
 
         this.setTitle(getIntent().getStringExtra("contact"));
 
-        mMainContent = (ListView)findViewById(R.id.mainContentChat);
-        mChatField = (EditText)findViewById(R.id.chatField);
-        mNoMessages = (TextView)findViewById(R.id.noMessages);
+        Task.execute(getIntent().getStringExtra("recipient"), mPrefsGlobal.getString("owner", "none"));
+        input();
+
+        mMainContent = (ListView) findViewById(R.id.mainContentChat);
+        mChatField = (EditText) findViewById(R.id.chatField);
+        mNoMessages = (TextView) findViewById(R.id.noMessages);
 
         mChatField.setCursorVisible(false);
 
@@ -141,7 +149,7 @@ public class Chat extends Activity
             {
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, ((EnumChat)view.getTag()).Title);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, ((EnumChat) view.getTag()).Title);
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
                 return true;
@@ -154,7 +162,7 @@ public class Chat extends Activity
         @Override
         protected String doInBackground(String... params)
         {
-            if(params[0].equals("none"))
+            if (params[0].equals("none"))
             {
                 cancel(true);
             }
@@ -165,15 +173,17 @@ public class Chat extends Activity
                 URL mURL = new URL(Initialize.SecureTalkServer + "getMessageByID.php?sender=" + params[0] + "&recipient=" + params[1] + "&put=true");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
                 while ((c = reader.readLine()) != null)
+                {
                     rts += c;
+                }
                 return rts;
             }
-            catch(UnknownHostException e)
+            catch (UnknownHostException e)
             {
                 cancel(true);
                 return null;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 cancel(true);
                 return null;
@@ -204,14 +214,14 @@ public class Chat extends Activity
                     mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, currentObject.getString("time"), null, RSADecrypt(currentObject.getString("content"))));
                 }
 
-                if(i > 0)
+                if (i > 0)
                 {
                     mNoMessages.setVisibility(View.INVISIBLE);
                 }
 
                 mMainContent.setAdapter(mChatListAdapter);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 e.printStackTrace();
             }
@@ -221,8 +231,8 @@ public class Chat extends Activity
     @Override
     public void onStart()
     {
-        Task.execute(getIntent().getStringExtra("recipient"), mPrefsGlobal.getString("owner", "none"));
-        input();
+        //Task.execute(getIntent().getStringExtra("recipient"), mPrefsGlobal.getString("owner", "none"));
+        //input();
         super.onStart();
     }
 
@@ -242,20 +252,18 @@ public class Chat extends Activity
 
     public void sendParts(MenuItem item)
     {
-        addMessage(null);
-
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
-//        startActivityForResult(photoPickerIntent, 1);
+        startActivityForResult(photoPickerIntent, 1);
     }
 
     public void sendCurrentMessage(MenuItem item)
     {
         final ChatListAdapter mChatListAdapter = new ChatListAdapter(this, CHATLIST);
         String currentMessage = mChatField.getText().toString();
-        long timestamp = System.currentTimeMillis()*1000;
+        long timestamp = System.currentTimeMillis() * 1000;
 
-        if(currentMessage.length() > 0)
+        if (currentMessage.length() > 0)
         {
             try
             {
@@ -266,7 +274,7 @@ public class Chat extends Activity
                     {
                         String MessageContent = "";
 
-                        if(params[2].equals("none"))
+                        if (params[2].equals("none"))
                         {
                             cancel(true);
                             return null;
@@ -282,15 +290,17 @@ public class Chat extends Activity
                                 BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
 
                                 while ((c = reader.readLine()) != null)
+                                {
                                     rts += c;
+                                }
                                 return params[0];
                             }
-                            catch(UnknownHostException e)
+                            catch (UnknownHostException e)
                             {
                                 cancel(true);
                                 return null;
                             }
-                            catch(Exception e)
+                            catch (Exception e)
                             {
                                 cancel(true);
                                 e.printStackTrace();
@@ -310,7 +320,7 @@ public class Chat extends Activity
                     protected void onCancelled()
                     {
                         NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
-                        if(netInfo == null || !netInfo.isConnectedOrConnecting())
+                        if (netInfo == null || !netInfo.isConnectedOrConnecting())
                         {
                             setResult(RESULT_OK, new Intent().putExtra("result", 3).putExtra("error_content", getResources().getString(R.string.noconnection)));
                             finish();
@@ -325,7 +335,7 @@ public class Chat extends Activity
                     @Override
                     protected void onPostExecute(String params)
                     {
-                        if(params != null)
+                        if (params != null)
                         {
                             mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, "Il y à quelques secondes", "salut", params));
                             mMainContent.setAdapter(mChatListAdapter);
@@ -340,12 +350,12 @@ public class Chat extends Activity
                     }
                 }.execute(mChatField.getText().toString(), mPrefsGlobal.getString("owner", "none"), getIntent().getStringExtra("recipient"));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 e.printStackTrace();
             }
 
-            if(item != null)
+            if (item != null)
             {
                 setResult(RESULT_OK, new Intent().putExtra("result", -1));
                 finish();
@@ -374,12 +384,41 @@ public class Chat extends Activity
         mCipher.init(Cipher.DECRYPT_MODE, mKeyFactory.generatePrivate(spec));
         byte[] stringBytes = Hex.decodeHex(value.toCharArray());
         byte[] decryptedBytes = mCipher.doFinal(stringBytes);
-        return new String(decryptedBytes,"UTF-8");
+        return new String(decryptedBytes, "UTF-8");
     }
 
     public void focusField(View view)
     {
         mMainContent.requestFocus();
+    }
+
+    public void SendPhoto(Bitmap bitmap)
+    {
+        AsyncTask<Bitmap, Void, String> Task = new AsyncTask<Bitmap, Void, String>()
+        {
+            @Override
+            protected String doInBackground(Bitmap... params)
+            {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                params[0].compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                byte[] b = baos.toByteArray();
+                return Base64.encodeToString(b, Base64.DEFAULT);
+            }
+
+            @Override
+            protected void onPostExecute(String input)
+            {
+                ChatListAdapter mChatListAdapter = new ChatListAdapter(getApplicationContext(), CHATLIST);
+                mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, "0", "salut", "Ok d'accord").putPhoto(input));
+                mMainContent.setAdapter(mChatListAdapter);
+                //mChatField.setText(input);
+                //Log.i("BASE64", input);
+                //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("data:image/jpg;base64," + input));
+                //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
+                //startActivity(intent);
+            }
+        };
+        Task.execute(bitmap);
     }
 
     @Override
@@ -392,6 +431,17 @@ public class Chat extends Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        if (requestCode == 1 && data != null && data.getData() != null)
+        {
+            Cursor mCursor = getContentResolver().query(data.getData(), new String[]{android.provider.MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            mCursor.moveToFirst();
+
+            Bitmap mSelectedPhoto = BitmapFactory.decodeFile(mCursor.getString(0));
+
+            SendPhoto(mSelectedPhoto);
+
+            mCursor.close();
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 

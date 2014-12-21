@@ -24,7 +24,7 @@ public class DBSecureTalk extends SQLiteOpenHelper
     {
         try
         {
-            db.execSQL("CREATE TABLE `Elements` (\n" +
+            db.execSQL("CREATE TABLE IF NOT EXISTS `Elements` (\n" +
                     "\t`ID`\tINTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                     "\t`GravatarID`\tVARCHAR NOT NULL UNIQUE,\n" +
                     "\t`Name`\tVARCHAR NOT NULL,\n" +
@@ -68,7 +68,7 @@ public class DBSecureTalk extends SQLiteOpenHelper
 
         while(result.moveToNext())
         {
-            mRTS.add(new EnumContact(mContext, result.getInt(0), result.getString(1), result.getString(2), result.getString(3), result.getString(4), false));
+            mRTS.add(new EnumContact(mContext, result.getInt(0), result.getString(1), result.getString(2), result.getString(3), result.getString(4), false).singleLine().bwPhoto());
         }
 
         return mRTS;

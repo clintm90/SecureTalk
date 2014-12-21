@@ -10,8 +10,9 @@ public class EnumNavigationDrawer implements Serializable
     public String Name;
     public Drawable Photo;
 
-    public EnumNavigationDrawer(Context context, String name)
+    public EnumNavigationDrawer(Context context, String name, Drawable photo)
     {
         Name = name;
+        Photo = photo;
     }
 }
