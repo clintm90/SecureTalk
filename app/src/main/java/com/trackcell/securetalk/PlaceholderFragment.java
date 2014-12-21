@@ -178,20 +178,7 @@ public class PlaceholderFragment extends Fragment
                 View rootViewDonation = inflater.inflate(R.layout.fragment_donation, container, false);
                 final ProgressBar mProgress = (ProgressBar)rootViewDonation.findViewById(R.id.fragment_donation_progress);
                 WebView mWebView = (WebView)rootViewDonation.findViewById(R.id.donationWebView);
-                mWebView.setWebViewClient(new WebViewClient());/*
-                {
-                    @Override
-                    public void onPageStarted(WebView view, String url, Bitmap favicon)
-                    {
-                        super.onPageStarted(view, url, favicon);
-                    }
-
-                    @Override
-                    public void onPageFinished(WebView view, String url)
-                    {
-                        mProgress.setVisibility(View.INVISIBLE);
-                    }
-                });*/
+                mWebView.setWebViewClient(new WebViewClient());
                 mWebView.getSettings().setJavaScriptEnabled(true);
                 mWebView.loadUrl("https://www.paypal.com/cgi-bin/webscr?cmd=_donations" + "&business=clint%2emourlevat%40gmail%2ecom" + "&lc=FR" + "&item_name=ds" + "&item_number=ds" + "&no_note=0" + "&currency_code=EUR" + "&bn=PP-DonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest");
                 return rootViewDonation;
