@@ -60,9 +60,11 @@
         android:layout_height="wrap_content"
         ads:adSize="BANNER"
         ads:adUnitId="@string/banner_ad_unit_id"
-        android:layout_alignBottom="@+id/fragment_navigation_drawer_list"
-        android:layout_alignRight="@+id/fragment_navigation_drawer_name"
-        android:layout_alignEnd="@+id/fragment_navigation_drawer_name">
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true">
     </com.google.android.gms.ads.AdView>
 
 </RelativeLayout>

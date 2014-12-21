@@ -28,5 +28,15 @@
         android:name="com.trackcell.securetalk.NavigationDrawerFragment"
         tools:layout="@layout/fragment_navigation_drawer" />
 
+    <!--
+    <fragment
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="com.trackcell.securetalk.AdFragment"
+        android:id="@+id/adFragment"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        tools:layout="@layout/fragment_ad"/>
+        -->
 
 </android.support.v4.widget.DrawerLayout>

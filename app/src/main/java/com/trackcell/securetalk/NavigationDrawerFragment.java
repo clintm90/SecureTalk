@@ -21,9 +21,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,10 +76,10 @@ public class NavigationDrawerFragment extends Fragment
         mDrawerListView = (ListView) rootView.findViewById(R.id.fragment_navigation_drawer_list);
         TextView mVersion = (TextView) rootView.findViewById(R.id.fragment_navigation_drawer_about);
         TextView mName = (TextView) rootView.findViewById(R.id.fragment_navigation_drawer_name);
-        AdView mAdView = (AdView) rootView.findViewById(R.id.fragment_navigation_drawer_adview);
+        /*AdView mAdView = (AdView) rootView.findViewById(R.id.fragment_navigation_drawer_adview);
 
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        mAdView.loadAd(adRequest);*/
 
         try
         {
