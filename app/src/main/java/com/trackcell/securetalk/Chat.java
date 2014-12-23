@@ -293,7 +293,17 @@ public class Chat extends Activity
                                 {
                                     rts += c;
                                 }
-                                return params[0];
+                                
+                                JSONObject returnValue = new JSONObject(rts);
+                                if (returnValue.getInt("response") != 1)
+                                {
+                                    return params[0];
+                                }
+                                else
+                                {
+                                    cancel(true);
+                                    return null;
+                                }
                             }
                             catch (UnknownHostException e)
                             {
