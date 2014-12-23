@@ -111,8 +111,6 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
             mKeyPairGenerator = null;
         }
 
-        //InitUser();
-
         setContentView(R.layout.activity_landing);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)getFragmentManager().findFragmentById(R.id.navigation_drawer);
