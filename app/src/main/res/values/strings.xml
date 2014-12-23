@@ -55,5 +55,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="banner_ad_unit_id">ca-app-pub-8459890125912268/8527258348</string>
+    <string name="firstlaunch">FIRST LAUNCH</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_activity_first_launch">ActivityFirstLaunch</string>
+    <string name="title_activity_first_launch">FirstLau</string>
 
 </resources>

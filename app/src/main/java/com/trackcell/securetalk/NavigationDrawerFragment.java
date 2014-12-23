@@ -18,8 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,14 +76,21 @@ public class NavigationDrawerFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        SharedPreferences mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        
         View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView = (ListView) rootView.findViewById(R.id.fragment_navigation_drawer_list);
+        ImageView mPhoto = (ImageView) rootView.findViewById(R.id.fragment_navigation_drawer_photo);
         TextView mVersion = (TextView) rootView.findViewById(R.id.fragment_navigation_drawer_about);
         TextView mName = (TextView) rootView.findViewById(R.id.fragment_navigation_drawer_name);
-        /*AdView mAdView = (AdView) rootView.findViewById(R.id.fragment_navigation_drawer_adview);
+        AdView mAdView = (AdView) rootView.findViewById(R.id.fragment_navigation_drawer_adview);
 
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);*/
+        mAdView.loadAd(adRequest);
+        
+        mName.setText(mPrefsGlobal.getString("name", "none"));
+        
+        Landing.LoadGravatar(getActivity().getApplicationContext(), mPhoto, mPrefsGlobal.getString("owner", "none"), true);
 
         try
         {

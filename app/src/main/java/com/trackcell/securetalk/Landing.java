@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
@@ -50,10 +51,6 @@ import java.security.KeyPairGenerator;
 import java.util.ArrayList;
 
 import javax.crypto.Cipher;
-
-import de.bripkens.gravatar.DefaultImage;
-import de.bripkens.gravatar.Gravatar;
-import de.bripkens.gravatar.Rating;
 
 public class Landing extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {
@@ -114,7 +111,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
             mKeyPairGenerator = null;
         }
 
-        InitUser();
+        //InitUser();
 
         setContentView(R.layout.activity_landing);
 
@@ -126,6 +123,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
 
     public void InitUser()
     {
+        mKP = mKeyPairGenerator.generateKeyPair();
         final Context parent = this;
         final ProgressDialog alertDialog = ProgressDialog.show(this, "", getString(R.string.register));
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
@@ -136,23 +134,27 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         final String mAccountsMailID = new String(Hex.encodeHex(DigestUtils.md5(aaccount[0].name)));
         if (mAccountsMailID.length() > 0 && aaccount[0].name.contains("@"))
         {
-            AsyncTask<Object, Void, Object[]> InitUserTask = new AsyncTask<Object, Void, Object[]>()
+            final AsyncTask<Object, Void, Object[]> NewUserTask = new AsyncTask<Object, Void, Object[]>()
             {
                 @Override
                 protected Object[] doInBackground(Object... params)
                 {
                     try
                     {
-                        Object[] mRTS = new Object[3];
+                        String mPublicKey = new String(Hex.encodeHex(((KeyPair)params[2]).getPublic().getEncoded()));
+                        String mPrivateKey = new String(Hex.encodeHex(((KeyPair)params[2]).getPrivate().getEncoded()));
+
+                        Object[] mRTS = new Object[10];
                         String rts = "", c;
-                        URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id="+ params[0].toString() + "&put=false");
+                        URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id="+ params[0].toString() + "&name=" + params[2].toString() + "&description=" + "description" + "&public_key=" + mPublicKey + "&put=true");
                         BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
 
                         while ((c = reader.readLine()) != null)
                             rts += c;
-                        mRTS[0] = rts;
-                        mRTS[1] = params[1];
-                        mRTS[2] = params[0];
+                        mRTS[0] = rts;          //response
+                        mRTS[1] = params[0];    //owner
+                        mRTS[2] = params[1];    //mKP
+                        mRTS[3] = params[2];    //name
                         return mRTS;
                     }
                     catch(UnknownHostException e)
@@ -169,11 +171,125 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                         return null;
                     }
                 }
+                
+                @Override
+                protected void onCancelled()
+                {
+                }
+                
+                @Override
+                protected void onPostExecute(Object[] input)
+                {
+                    try
+                    {
+                        JSONObject registerValue = new JSONObject(input[0].toString());
+                        if (registerValue.getInt("response") == 1)
+                        {
+                            Toast.makeText(parent, input.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            
+            final AsyncTask<String, Void, String> UpdatePublicKeyTask = new AsyncTask<String, Void, String>()
+            {
+                @Override
+                protected String doInBackground(String... params)
+                {
+                    try
+                    {
+                        String rts = "", c;
+                        URL mURL = new URL(Initialize.SecureTalkServer + "updatePublicKey.php?id=" + params[0].toString() + "&public_key=" + params[1].toString());
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
+
+                        while ((c = reader.readLine()) != null)
+                            rts += c;
+                        return rts;
+                    }
+                    catch(UnknownHostException e)
+                    {
+                        NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
+                        if(netInfo == null || !netInfo.isConnectedOrConnecting())
+                            cancel(true);
+                        return null;
+                    }
+                    catch (Exception e)
+                    {
+                        cancel(true);
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+                
+                @Override
+                protected void onCancelled()
+                {
+                }
+                
+                @Override
+                protected void onPostExecute(String input)
+                {
+                    try
+                    {
+                        JSONObject registerValue = new JSONObject(input);
+                        if (registerValue.getInt("response") == 1)
+                        {
+                            recreate();
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            
+            AsyncTask<Object, Void, Object[]> InitUserTask = new AsyncTask<Object, Void, Object[]>()
+            {
+                @Override
+                protected Object[] doInBackground(Object... params)
+                {
+                    try
+                    {
+                        Object[] mRTS = new Object[10];
+                        String rts = "", c;
+                        URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id="+ params[1].toString() + "&put=false");
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
+
+                        while ((c = reader.readLine()) != null)
+                            rts += c;
+                        mRTS[0] = rts;          //response
+                        mRTS[1] = params[0];    //initialized
+                        mRTS[2] = params[1];    //owner
+                        mRTS[3] = params[2];    //KeyPair
+                        return mRTS;
+                    }
+                    catch(UnknownHostException e)
+                    {
+                        NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
+                        if(netInfo == null || !netInfo.isConnectedOrConnecting())
+                            //mWelcomeLabel.setText(getString(R.string.noconnection));
+                            //mWelcomeLabel.setBackgroundColor(getResources().getColor(R.color.red));
+                            cancel(true);
+                        return null;
+                    }
+                    catch (Exception e)
+                    {
+                        cancel(true);
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
 
                 @Override
                 protected void onCancelled()
                 {
                     alertDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
                 }
 
                 @Override
@@ -183,18 +299,30 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                     try
                     {
                         JSONObject registerValue = new JSONObject(input[0].toString());
-                        String mPublicKey = new String(Hex.encodeHex(mKP.getPublic().getEncoded()));
-                        String mPrivateKey = new String(Hex.encodeHex(mKP.getPrivate().getEncoded()));
                         if (registerValue.getInt("response") == 1)
                         {
                             mStorageGlobal.putBoolean("initialized", true);
                             mStorageGlobal.putString("owner", input[2].toString());
-                            /*if(registerValue.getString("public_key") != mPublicKey)
+                            mStorageGlobal.putString("name", registerValue.getString("name"));
+                            if (!(Boolean) input[1] || !registerValue.getString("public_key").equals(mPrefsGlobal.getString("public_key", "none")))
                             {
-                                //Update mPublicKey to database
-                                mStorageGlobal.putString("public_key", mPublicKey);
-                                mStorageGlobal.putString("private_key", mPrivateKey);
-                            }*/
+                                try
+                                {
+                                    String mPublicKey = new String(Hex.encodeHex(((KeyPair)input[3]).getPublic().getEncoded()));
+                                    String mPrivateKey = new String(Hex.encodeHex(((KeyPair)input[3]).getPrivate().getEncoded()));
+                                    mStorageGlobal.putString("public_key", mPublicKey);
+                                    mStorageGlobal.putString("private_key", mPrivateKey);
+                                    UpdatePublicKeyTask.execute(input[2].toString(), mPublicKey);
+                                }
+                                catch(Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_LONG).show();
+                            }
                             mStorageGlobal.apply();
                         }
                         else
@@ -244,7 +372,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                             }
                             else
                             {
-                                //MainTask.execute(true, mAccountsMailID, new String(Hex.encodeHex(mKP.getPublic().getEncoded())), new String(Hex.encodeHex(mKP.getPrivate().getEncoded())), Name);
+                                NewUserTask.execute(mAccountsMailID, mKP, Name);
                             }
                         }
                     });
@@ -253,14 +381,14 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                     builder.show();
                 }
             };
+            
             if (mPrefsGlobal.getBoolean("initialized", false) && !mPrefsGlobal.getString("owner", "none").equals("none") && !mPrefsGlobal.getString("private_key", "none").equals("none"))
             {
-                InitUserTask.execute(mPrefsGlobal.getString("owner", "none"), mKP);
+                InitUserTask.execute(true, mPrefsGlobal.getString("owner", "none"), mKP);
             }
             else
             {
-                mKP = mKeyPairGenerator.generateKeyPair();
-                InitUserTask.execute(mAccountsMailID, mKP);
+                InitUserTask.execute(false, mAccountsMailID, mKP);
             }
         }
         else
@@ -301,8 +429,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
 
                 try
                 {
-                    String GravatarImageURL = new Gravatar().setSize(80).setHttps(true).setRating(Rating.GENERAL_AUDIENCE).setStandardDefaultImage(DefaultImage.MONSTER).getUrl(params[0]);
-                    httpURLConnection = (HttpURLConnection)(new URL(GravatarImageURL)).openConnection();
+                    httpURLConnection = (HttpURLConnection)(new URL("http://www.gravatar.com/avatar/" + params[0] + "?s=80&d=404")).openConnection();
                     return BitmapFactory.decodeStream(httpURLConnection.getInputStream(), null, new BitmapFactory.Options());
                 }
                 catch(UnknownHostException e)
@@ -410,6 +537,13 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         mStorageGlobal.apply();
     }
 
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        InitUser();
+    }
+    
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         switch(data.getExtras().getInt("result"))

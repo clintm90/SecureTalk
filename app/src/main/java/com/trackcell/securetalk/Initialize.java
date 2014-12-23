@@ -5,7 +5,7 @@ import android.content.Intent;
 
 public class Initialize extends Application
 {
-    public static String SecureTalkServer = "http://clintm.free.fr/SecureTalk/";
+    public static String SecureTalkServer = "http://securetalk-sql.sourceforge.net/";
     public static Intent mMessageWorkerService;
 
     @Override

@@ -50,5 +50,10 @@
     <string name="about">A Propos de SecureTalk&#8230;</string>
     <string name="about_value">C\'est une application gratuite qui vous permet de vous...</string>
     <string name="nomessage">Il n\'y à pas de message</string>
+    <string name="action_example">Exemple</string>
+    <string name="banner_ad_unit_id">ca-app-pub-8459890125912268/8527258348</string>
+    <string name="navigation_drawer_close">Fermer</string>
+    <string name="navigation_drawer_open">Afficher</string>
+    <string name="title_activity_landing">Acc</string>
 
 </resources>

@@ -73,7 +73,7 @@ public class PlaceholderFragment extends Fragment
 
                 final ContactListAdapter mContactListAdapter = new ContactListAdapter(getActivity().getApplicationContext(), mDBSecureTalk.GetElements());
 
-                mContactListAdapter.add((new EnumContact(getActivity().getApplicationContext(), -1, "785b86f1ea73414d6c0493b2411421ba", "Clint Mourlevat", "Pas de nouveau message", "78", false)).bwPhoto());
+                mContactListAdapter.add((new EnumContact(getActivity().getApplicationContext(), -1, "785b86f1ea73414d6c0493b2411421ba", "Clint Mourlevat", "Pas de nouveau message", "305c300d06092a864886f70d0101010500034b003048024100ac03087d9331699a46bee4d8a185f96946388e1e92bbf6cd343eaf3e83c180e0a79aea5aaabb7482c035143b3c25285fef5e22b527b6e3b64b06ab92d171ee030203010001", false)).bwPhoto());
 
                 mMainContent.setAdapter(mContactListAdapter);
 

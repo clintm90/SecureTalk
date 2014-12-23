@@ -80,11 +80,9 @@ public class DBSecureTalk extends SQLiteOpenHelper
         mDatabase.execSQL("DELETE FROM \"Elements\" WHERE ID=\""+String.valueOf(id)+"\";");
     }
 
-    //region AlterElement
-    /*public void AlterElement(int id, String name, String description)
+    public void AlterElement(int id, String name, String description, String publicKey)
     {
         SQLiteDatabase mDatabase = getWritableDatabase();
-        mDatabase.execSQL("UPDATE \"Elements\" SET \"Name\" = \""+name+"\", \"Description\" = \""+description+"\" WHERE \"ID\" = "+id+";");
-    }*/
-    //endregion
+        mDatabase.execSQL("UPDATE \"Elements\" SET \"Name\" = \""+name+"\", \"Description\" = \""+description+"\", \"PublicKey\" = \""+publicKey+"\" WHERE \"ID\" = "+id+";");
+    }
 }

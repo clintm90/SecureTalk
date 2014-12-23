@@ -286,7 +286,7 @@ public class Chat extends Activity
                                 MessageContent = RSAEncrypt(params[0]);
 
                                 String rts = "", c;
-                                URL mURL = new URL(Initialize.SecureTalkServer + "sendMessageByID.php" + "?message=" + MessageContent + "&sender=" + params[1] + "&recipient=" + params[2]);
+                                URL mURL = new URL(Initialize.SecureTalkServer + "sendMessageByID.php?message=" + MessageContent + "&sender=" + params[1] + "&recipient=" + params[2]);
                                 BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
 
                                 while ((c = reader.readLine()) != null)
@@ -348,7 +348,8 @@ public class Chat extends Activity
 
                         mChatField.setHint(R.string.entermessage);
                     }
-                }.execute(mChatField.getText().toString(), mPrefsGlobal.getString("owner", "none"), getIntent().getStringExtra("recipient"));
+                };
+                SendTask.execute(mChatField.getText().toString(), mPrefsGlobal.getString("owner", "none"), getIntent().getStringExtra("recipient"));
             }
             catch (Exception e)
             {

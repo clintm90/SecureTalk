@@ -1,2 +1,4 @@
 language: android
-script: ./gradlew build assembleDebug
+script:
+ - sudo chmod +x gradlew
+ - ./gradlew build assembleDebug
