@@ -16,4 +16,11 @@ public class Initialize extends Application
         mMessageWorkerService = new Intent(this, MessageWorker.class);
         startService(mMessageWorkerService);
     }
+    
+    @DebugOnly
+    public static String GenerateRandomWords()
+    {
+        String[] words = new String[] {"Ok ben d'accord", "Comment ca va ?", "Ok demain", "Si tu veux !", "ptdr", "Allez à plus", "Ben d'accord", "S'il vous plait ?", ":)", "Oui"};
+        return words[((int) Math.round(Math.random() * 9))];
+    }
 }

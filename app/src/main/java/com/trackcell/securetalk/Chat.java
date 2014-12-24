@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.format.DateUtils;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -249,7 +250,8 @@ public class Chat extends Activity
 
     public void addMessage(MenuItem item)
     {
-        mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, "16:42", "salut", "Ok d'accord"));
+        String elapsedTime = (String) DateUtils.getRelativeTimeSpanString(30);
+        mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, elapsedTime, "salut", Initialize.GenerateRandomWords()));
         mMainContent.setAdapter(mChatListAdapter);
     }
 
@@ -428,10 +430,6 @@ public class Chat extends Activity
                 //Todo: adding method to send photo
                 mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, "23:47", "salut", "Ok d'accord").putPhoto((Bitmap) input[0]));
                 mMainContent.setAdapter(mChatListAdapter);
-                //mChatField.setText(input);
-                //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("data:image/jpg;base64," + input));
-                //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
-                //startActivity(intent);
             }
         };
         Task.execute(bitmap);

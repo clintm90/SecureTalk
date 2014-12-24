@@ -319,7 +319,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                             }
                             else
                             {
-                                Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_LONG).show();
+                                //TODO: complete end registering
                             }
                             mStorageGlobal.apply();
                         }
