@@ -47,6 +47,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -69,6 +70,8 @@ public class Chat extends Activity
     private Cipher mCipher;
     private KeyFactory mKeyFactory;
     private ChatListAdapter mChatListAdapter;
+    
+    private Timer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -112,9 +115,90 @@ public class Chat extends Activity
 
         mChatField.setCursorVisible(false);
 
-        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mChatField, InputMethodManager.SHOW_FORCED);
+        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mChatField, InputMethodManager.SHOW_FORCED);
 
-        Task.execute(getIntent().getStringExtra("recipient"), mPrefsGlobal.getString("owner", "none"));
+        /*TimerTask task = new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                //Toast.makeText(getApplicationContext(), "salut", Toast.LENGTH_LONG).show();
+                new AsyncTask<String, Void, String>()
+                {
+                    @Override
+                    protected String doInBackground(String... params)
+                    {
+                        if (params[0].equals("none"))
+                        {
+                            cancel(true);
+                        }
+
+                        try
+                        {
+                            String rts = "", c;
+                            URL mURL = new URL(Initialize.SecureTalkServer + "getMessageByID.php?sender=" + params[0] + "&recipient=" + params[1] + "&put=true");
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
+                            while ((c = reader.readLine()) != null)
+                            {
+                                rts += c;
+                            }
+                            return rts;
+                        }
+                        catch (UnknownHostException e)
+                        {
+                            cancel(true);
+                            return null;
+                        }
+                        catch (Exception e)
+                        {
+                            cancel(true);
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected void onCancelled()
+                    {
+                    }
+
+                    @Override
+                    protected void onPostExecute(String params)
+                    {
+                        int i = 0;
+                        try
+                        {
+                            JSONObject mRoot = new JSONObject(params);
+                            JSONObject mItems = mRoot.getJSONObject("result");
+
+                            mChatListAdapter.clear();
+
+                            for (i = 0; i < mItems.getJSONArray("item").length(); i++)
+                            {
+                                JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
+
+                                //TODO: change is_me
+                                mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, currentObject.getLong("time") * 1000, null, RSADecrypt(currentObject.getString("content"))));
+                            }
+
+                            if (i > 0)
+                            {
+                                mNoMessages.setVisibility(View.INVISIBLE);
+                            }
+
+                            mMainContent.setAdapter(mChatListAdapter);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }.execute(getIntent().getStringExtra("recipient"), mPrefsGlobal.getString("owner", "none"));
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task, 5000, 85);*/
+        
+        //Task.execute(getIntent().getStringExtra("recipient"), mPrefsGlobal.getString("owner", "none"));
 
         mChatField.setOnClickListener(new View.OnClickListener()
         {
@@ -154,20 +238,64 @@ public class Chat extends Activity
             {
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, ((EnumChat) view.getTag()).Title);
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
+                sendIntent.putExtra(Intent.EXTRA_STREAM, ((EnumChat) view.getTag()).Photo);
+                sendIntent.setType("image/jpeg");
+                startActivity(Intent.createChooser(sendIntent, "Share Image"));
                 return true;
             }
         });
     }
 
-    final AsyncTask<String, Void, String> Task = new AsyncTask<String, Void, String>()
+    /*final AsyncTask<String, Void, String> Task = new AsyncTask<String, Void, String>()
     {
+        final AsyncTask mTask = this;
+        TimerTask mTimerTask;
+        
         @Override
-        protected String doInBackground(String... params)
+        protected String doInBackground(final String... params)
         {
-            if (params[0].equals("none"))
+            mTimer = new Timer();
+            mTimerTask = new TimerTask()
+            {
+                @Override
+                public void run()
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            Toast.makeText(getApplicationContext(), "salut", Toast.LENGTH_LONG).show();
+                            /*if (params[0].equals("none"))
+                            {
+                                mTask.cancel(true);
+                            }
+
+                            try
+                            {
+                                String rts = "", c;
+                                URL mURL = new URL(Initialize.SecureTalkServer + "getMessageByID.php?sender=" + params[0] + "&recipient=" + params[1] + "&put=true");
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
+                                while ((c = reader.readLine()) != null)
+                                {
+                                    rts += c;
+                                }
+                                Toast.makeText(getApplicationContext(), "salut", Toast.LENGTH_LONG).show();
+                            }
+                            catch (UnknownHostException e)
+                            {
+                                mTask.cancel(true);
+                            }
+                            catch (Exception e)
+                            {
+                                mTask.cancel(true);
+                            }*/
+                        /*}
+                    });
+                }
+            };
+            mTimer.scheduleAtFixedRate(mTimerTask, 100, 10000);*/
+            /*if (params[0].equals("none"))
             {
                 cancel(true);
             }
@@ -192,7 +320,8 @@ public class Chat extends Activity
             {
                 cancel(true);
                 return null;
-            }
+            }*/
+/*            return null;
         }
 
         @Override
@@ -231,7 +360,7 @@ public class Chat extends Activity
                 e.printStackTrace();
             }
         }
-    };
+    };*/
 
     @Override
     public void onStart()
@@ -294,7 +423,7 @@ public class Chat extends Activity
                                 {
                                     rts += c;
                                 }
-                                
+
                                 JSONObject returnValue = new JSONObject(rts);
                                 if (returnValue.getInt("response") == 1)
                                 {
@@ -438,6 +567,12 @@ public class Chat extends Activity
         setResult(RESULT_OK, new Intent().putExtra("result", 1));
         super.onBackPressed();
     }
+    
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -472,6 +607,8 @@ public class Chat extends Activity
         {
             case android.R.id.home:
                 setResult(RESULT_OK, new Intent().putExtra("result", 1));
+                //Task.cancel(true);
+                //mTimer.cancel();
                 finish();
                 return true;
 

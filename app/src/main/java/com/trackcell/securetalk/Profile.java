@@ -81,7 +81,8 @@ public class Profile extends Activity
                 else
                     mWebView.loadUrl("https://gravatar.com/site/signup/");
             }
-        }.execute();
+        };
+        jsonRequest.execute();
     }
 
     public void newProfile(MenuItem item)

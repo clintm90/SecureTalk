@@ -3,6 +3,7 @@ package com.trackcell.securetalk;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -74,9 +75,9 @@ public class NavigationDrawerFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState)
     {
-        SharedPreferences mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        final SharedPreferences mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         
         View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView = (ListView) rootView.findViewById(R.id.fragment_navigation_drawer_list);
@@ -89,6 +90,17 @@ public class NavigationDrawerFragment extends Fragment
         mAdView.loadAd(adRequest);
         
         mName.setText(mPrefsGlobal.getString("name", "none"));
+        
+        mName.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(getActivity().getApplicationContext(), Profile.class);
+                intent.putExtra("contactId", mPrefsGlobal.getString("owner", "none"));
+                getActivity().startActivityForResult(intent, 1);
+            }
+        });
         
         Landing.LoadGravatar(getActivity().getApplicationContext(), mPhoto, mPrefsGlobal.getString("owner", "none"), true);
 
