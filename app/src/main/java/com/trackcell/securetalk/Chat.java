@@ -116,8 +116,6 @@ public class Chat extends Activity
         mNoMessages = (TextView) findViewById(R.id.noMessages);
 
         mChatField.setCursorVisible(false);
-
-        input();
         
         /*TimerTask task = new TimerTask()
         {
@@ -218,7 +216,7 @@ public class Chat extends Activity
             {
                 if (actionId == EditorInfo.IME_ACTION_SEND)
                 {
-                    sendCurrentMessage(null);
+                    SendCurrentMessage(null);
                 }
                 return true;
             }
@@ -229,7 +227,7 @@ public class Chat extends Activity
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
-                input();
+                Input();
             }
         });
 
@@ -364,28 +362,26 @@ public class Chat extends Activity
         }
     };*/
 
-    public void input()
+    public void Input()
     {
-        /*mChatField.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(findViewById(R.id.chatField), InputMethodManager.SHOW_FORCED);*/
+        //mChatField.requestFocus();
         ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mChatField, InputMethodManager.SHOW_FORCED);
     }
 
-    public void addMessage(MenuItem item)
+    public void AddMessage(MenuItem item)
     {
         mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, 1418342400000L, "salut", Initialize.GenerateRandomWords()));
         mMainContent.setAdapter(mChatListAdapter);
     }
 
-    public void sendParts(MenuItem item)
+    public void SendParts(MenuItem item)
     {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, 1);
     }
 
-    public void sendCurrentMessage(MenuItem item)
+    public void SendCurrentMessage(MenuItem item)
     {
         String currentMessage = mChatField.getText().toString();
         long timestamp = System.currentTimeMillis() * 1000;
@@ -552,8 +548,28 @@ public class Chat extends Activity
         };
         SendPhotoTask.execute(bitmap);
     }
+    
+    private AsyncTask<String, Void, String> GetMessageByID = new AsyncTask<String, Void, String>()
+    {
+        @Override
+        protected String doInBackground(String... params)
+        {
+            Toast.makeText(getApplicationContext(), "salut", Toast.LENGTH_LONG).show();
+            return null;
+        }
+        
+        @Override
+        protected void onCancelled()
+        {
+        }
+        
+        @Override
+        protected void onPostExecute(String input)
+        {
+        }
+    };
 
-    private TimerTask Task = new TimerTask()
+    private TimerTask MainLoop = new TimerTask()
     {
         @Override
         public void run()
@@ -563,7 +579,7 @@ public class Chat extends Activity
                 @Override
                 public void run()
                 {
-                    Toast.makeText(getApplicationContext(), "salut", Toast.LENGTH_LONG).show();
+                    GetMessageByID.execute();
                 }
             });
         }
@@ -573,20 +589,23 @@ public class Chat extends Activity
     public void onStart()
     {
         super.onStart();
-        mTimer.scheduleAtFixedRate(Task, 85, Initialize.RefreshTime);
+        Input();
+        mTimer.scheduleAtFixedRate(MainLoop, 85, Initialize.RefreshTime);
     }
 
     @Override
     public void onBackPressed()
     {
-        setResult(RESULT_OK, new Intent().putExtra("result", 1));
         super.onBackPressed();
+        setResult(RESULT_OK, new Intent().putExtra("result", 1));
+        CloseApp();
     }
     
     @Override
     public void onStop()
     {
         super.onStop();
+        CloseApp();
     }
 
     @Override
@@ -633,7 +652,7 @@ public class Chat extends Activity
 
     private void CloseApp()
     {
-        Task.cancel();
+        MainLoop.cancel();
         mTimer.cancel();
         finish();
     }
