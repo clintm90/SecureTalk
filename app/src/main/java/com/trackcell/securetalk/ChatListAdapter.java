@@ -3,6 +3,7 @@ package com.trackcell.securetalk;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.ThumbnailUtils;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,9 @@ public class ChatListAdapter extends ArrayAdapter<EnumChat>
         ImageView mChatListPhoto = (ImageView)rowView.findViewById(R.id.model_chatlist_photo);
 
         mChatListTitle.setText(values.get(position).Title);
-        mChatListTimestamp.setText(values.get(position).Timestamp);
+
+        String elapsedTime = (String) DateUtils.getRelativeTimeSpanString(values.get(position).Timestamp);
+        mChatListTimestamp.setText(elapsedTime);
 
         if(values.get(position).isPhoto)
         {

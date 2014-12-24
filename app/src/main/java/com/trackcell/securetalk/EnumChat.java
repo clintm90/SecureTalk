@@ -9,13 +9,13 @@ public class EnumChat
     public boolean Error;
     public boolean isPhoto = false;
 
-    public String Timestamp;
+    public long Timestamp;
     public String ID;
     public String Title;
     public String Content;
     public Bitmap Photo;
 
-    public EnumChat(Context context, boolean is_me, boolean error, String timestamp, String id, String title)
+    public EnumChat(Context context, boolean is_me, boolean error, long timestamp, String id, String title)
     {
         isMe = is_me;
         Error = error;

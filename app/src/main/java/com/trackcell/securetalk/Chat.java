@@ -13,7 +13,6 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.format.DateUtils;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -46,6 +45,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.crypto.BadPaddingException;
@@ -105,9 +105,6 @@ public class Chat extends Activity
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
         this.setTitle(getIntent().getStringExtra("contact"));
-        
-        //Task.execute(getIntent().getStringExtra("recipient"), mPrefsGlobal.getString("owner", "none"));
-        //input();
 
         mMainContent = (ListView) findViewById(R.id.mainContentChat);
         mChatField = (EditText) findViewById(R.id.chatField);
@@ -116,6 +113,8 @@ public class Chat extends Activity
         mChatField.setCursorVisible(false);
 
         ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mChatField, InputMethodManager.SHOW_FORCED);
+
+        Task.execute(getIntent().getStringExtra("recipient"), mPrefsGlobal.getString("owner", "none"));
 
         mChatField.setOnClickListener(new View.OnClickListener()
         {
@@ -216,7 +215,8 @@ public class Chat extends Activity
                 {
                     JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
 
-                    mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, currentObject.getString("time"), null, RSADecrypt(currentObject.getString("content"))));
+                    //TODO: change is_me
+                    mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, currentObject.getLong("time") * 1000, null, RSADecrypt(currentObject.getString("content"))));
                 }
 
                 if (i > 0)
@@ -236,8 +236,6 @@ public class Chat extends Activity
     @Override
     public void onStart()
     {
-        //Task.execute(getIntent().getStringExtra("recipient"), mPrefsGlobal.getString("owner", "none"));
-        //input();
         super.onStart();
     }
 
@@ -250,8 +248,7 @@ public class Chat extends Activity
 
     public void addMessage(MenuItem item)
     {
-        String elapsedTime = (String) DateUtils.getRelativeTimeSpanString(30);
-        mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, elapsedTime, "salut", Initialize.GenerateRandomWords()));
+        mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, 1418342400000L, "salut", Initialize.GenerateRandomWords()));
         mMainContent.setAdapter(mChatListAdapter);
     }
 
@@ -351,7 +348,7 @@ public class Chat extends Activity
                     {
                         if (params != null)
                         {
-                            mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, "Il y à quelques secondes", "salut", params));
+                            mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, new Date().getTime(), "salut", params));
                             mMainContent.setAdapter(mChatListAdapter);
                             mNoMessages.setVisibility(View.INVISIBLE);
                         }
@@ -403,14 +400,9 @@ public class Chat extends Activity
         return new String(decryptedBytes, "UTF-8");
     }
 
-    public void focusField(View view)
-    {
-        mMainContent.requestFocus();
-    }
-
     public void SendPhoto(Bitmap bitmap)
     {
-        AsyncTask<Bitmap, Void, Object[]> Task = new AsyncTask<Bitmap, Void, Object[]>()
+        AsyncTask<Bitmap, Void, Object[]> SendPhotoTask = new AsyncTask<Bitmap, Void, Object[]>()
         {
             @Override
             protected Object[] doInBackground(Bitmap... params)
@@ -428,11 +420,11 @@ public class Chat extends Activity
             protected void onPostExecute(Object[] input)
             {
                 //Todo: adding method to send photo
-                mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, "23:47", "salut", "Ok d'accord").putPhoto((Bitmap) input[0]));
+                mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, 1418342400000L, "salut", "Ok d'accord").putPhoto((Bitmap) input[0]));
                 mMainContent.setAdapter(mChatListAdapter);
             }
         };
-        Task.execute(bitmap);
+        SendPhotoTask.execute(bitmap);
     }
 
     private void RefreshAdapter(ChatListAdapter adapter)
