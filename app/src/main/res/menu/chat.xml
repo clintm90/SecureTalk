@@ -11,13 +11,13 @@
             <item android:id="@+id/action_sendpart"
                   android:title="@string/sendphoto"
                   android:icon="@drawable/ic_action_photob"
-                  android:onClick="sendParts"
+                  android:onClick="SendParts"
                   android:showAsAction="always" />
             
             <item android:id="@+id/action_sendfile"
                   android:title="@string/sendfile"
                   android:icon="@drawable/ic_action_fileb"
-                  android:onClick="addMessage"
+                  android:onClick="AddMessage"
                   android:showAsAction="always" />
         </menu>
         

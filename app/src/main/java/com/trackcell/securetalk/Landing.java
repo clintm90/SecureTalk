@@ -121,6 +121,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
 
     public void InitUser()
     {
+        //TODO: implement register timeout
         mKP = mKeyPairGenerator.generateKeyPair();
         final Context parent = this;
         final ProgressDialog alertDialog = ProgressDialog.show(this, "", getString(R.string.register));
@@ -542,6 +543,13 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         InitUser();
     }
     
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        //Toast.makeText(getApplicationContext(), "onStop()", Toast.LENGTH_LONG).show();
+    }
+    
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         switch(data.getExtras().getInt("result"))
@@ -570,7 +578,8 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                 break;
 
             case 3:
-                mWelcomeLabel.setText(data.getExtras().getString("error_content"));
+                String error_content = data.getExtras().getString("error_content");
+                Toast.makeText(getApplicationContext(), error_content, Toast.LENGTH_LONG).show();
                 break;
 
             default:

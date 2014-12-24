@@ -2,12 +2,15 @@ package com.trackcell.securetalk;
 
 import android.app.Application;
 import android.content.Intent;
+import android.text.format.DateUtils;
 
 public class Initialize extends Application
 {
     public static String SecureTalkServer = "http://securetalk-sql.sourceforge.net/";
     public static Intent mMessageWorkerService;
-    public static long RefreshTime = 5000;
+    public static long ActivityRefreshTime = DateUtils.SECOND_IN_MILLIS * 5;
+    public static long ServiceRefreshTime = DateUtils.SECOND_IN_MILLIS * 10;
+    public static long InitTime = 50;
 
     @Override
     public void onCreate()
