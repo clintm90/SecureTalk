@@ -56,6 +56,7 @@
     <string name="navigation_drawer_open">Afficher</string>
     <string name="title_activity_landing">Acc</string>
     <string name="sendphoto">Envoyer une photo</string>
-    <string name="sendfile">Envoyer un fichier</string>
+    <string name="sendfile">Partager un fichier</string>
+    <string name="photo">photo</string>
 
 </resources>

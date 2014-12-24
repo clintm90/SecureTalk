@@ -61,5 +61,6 @@
     <string name="title_activity_first_launch">FirstLau</string>
     <string name="sendphoto">Send photo</string>
     <string name="sendfile">Send file</string>
+    <string name="photo">photo</string>
 
 </resources>

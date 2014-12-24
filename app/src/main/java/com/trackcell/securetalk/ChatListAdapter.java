@@ -1,6 +1,8 @@
 package com.trackcell.securetalk;
 
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.ThumbnailUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,13 +36,15 @@ public class ChatListAdapter extends ArrayAdapter<EnumChat>
         ImageView mChatListOther = (ImageView)rowView.findViewById(R.id.model_chatList_other);
         TextView mChatListTitle = (TextView)rowView.findViewById(R.id.model_chatList_title);
         TextView mChatListTimestamp = (TextView)rowView.findViewById(R.id.model_chatList_timestamp);
+        ImageView mChatListPhoto = (ImageView)rowView.findViewById(R.id.model_chatlist_photo);
 
         mChatListTitle.setText(values.get(position).Title);
         mChatListTimestamp.setText(values.get(position).Timestamp);
 
         if(values.get(position).isPhoto)
         {
-            mChatListTitle.setBackgroundResource(R.drawable.ic_photo_me);
+            mChatListPhoto.setVisibility(View.VISIBLE);
+            mChatListPhoto.setImageDrawable(new BitmapDrawable(this.context.getResources(), ThumbnailUtils.extractThumbnail(values.get(position).Photo, 50, 50)));
         }
 
         if(values.get(position).Error)

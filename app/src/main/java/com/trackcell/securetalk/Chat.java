@@ -249,7 +249,7 @@ public class Chat extends Activity
 
     public void addMessage(MenuItem item)
     {
-        mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, "0", "salut", "Ok d'accord"));
+        mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, "16:42", "salut", "Ok d'accord"));
         mMainContent.setAdapter(mChatListAdapter);
     }
 
@@ -408,21 +408,25 @@ public class Chat extends Activity
 
     public void SendPhoto(Bitmap bitmap)
     {
-        AsyncTask<Bitmap, Void, String> Task = new AsyncTask<Bitmap, Void, String>()
+        AsyncTask<Bitmap, Void, Object[]> Task = new AsyncTask<Bitmap, Void, Object[]>()
         {
             @Override
-            protected String doInBackground(Bitmap... params)
+            protected Object[] doInBackground(Bitmap... params)
             {
+                Object[] mRTS = new Object[2];
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 params[0].compress(Bitmap.CompressFormat.JPEG, 10, baos);
                 byte[] b = baos.toByteArray();
-                return Base64.encodeToString(b, Base64.DEFAULT);
+                mRTS[0] = params[0];
+                mRTS[1] = Base64.encodeToString(b, Base64.DEFAULT);
+                return mRTS;
             }
 
             @Override
-            protected void onPostExecute(String input)
+            protected void onPostExecute(Object[] input)
             {
-                mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, "23:47", "salut", "Ok d'accord").putPhoto(input));
+                //Todo: adding method to send photo
+                mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, "23:47", "salut", "Ok d'accord").putPhoto((Bitmap) input[0]));
                 mMainContent.setAdapter(mChatListAdapter);
                 //mChatField.setText(input);
                 //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("data:image/jpg;base64," + input));
