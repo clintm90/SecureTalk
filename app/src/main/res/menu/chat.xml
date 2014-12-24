@@ -2,16 +2,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.trackcell.securetalk.Chat" >
 
-    <item android:id="@+id/action_settings"
+    <item android:id="@+id/action_menu_joinpart"
         android:title="@string/action_menu_joinpart"
         android:icon="@drawable/ic_action_joinfile"
-        android:onClick="sendParts"
-        android:showAsAction="always" />
+        android:showAsAction="always">
+    
+        <menu>
+            <item android:id="@+id/action_sendpart"
+                  android:title="@string/sendphoto"
+                  android:icon="@drawable/ic_action_photob"
+                  android:onClick="sendParts"
+                  android:showAsAction="always" />
+            
+            <item android:id="@+id/action_sendfile"
+                  android:title="@string/sendfile"
+                  android:icon="@drawable/ic_action_fileb"
+                  android:onClick="addMessage"
+                  android:showAsAction="always" />
+        </menu>
+        
+    </item>
 
-    <item android:id="@+id/action_send"
+    <!--<item android:id="@+id/action_send"
           android:title="@string/action_menu_send"
           android:icon="@drawable/ic_action_send"
           android:onClick="sendCurrentMessage"
-          android:showAsAction="always" />
+          android:showAsAction="always" />-->
 
 </menu>

@@ -12,6 +12,7 @@ public class EnumChat
     public String ID;
     public String Title;
     public String Content;
+    public String Photo;
 
     public EnumChat(Context context, boolean is_me, boolean error, String timestamp, String id, String title)
     {
@@ -26,6 +27,7 @@ public class EnumChat
     public EnumChat putPhoto(String bitmap)
     {
         isPhoto = true;
+        Photo = bitmap;
         return this;
     }
 }

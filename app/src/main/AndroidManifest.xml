@@ -52,56 +52,56 @@
             android:icon="@null"
             android:label="@string/action_menu_add"
             android:logo="@color/transparent"
-            android:parentActivityName=".Main"
+            android:parentActivityName=".Landing"
             android:theme="@style/AppTheme.ActionBar.Back" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.trackcell.securetalk.Main" />
+                android:value="com.trackcell.securetalk.Landing" />
         </activity>
         <activity
             android:name=".Chat"
             android:icon="@null"
             android:label="@string/title_activity_chat"
             android:logo="@color/transparent"
-            android:parentActivityName=".Main"
+            android:parentActivityName=".Landing"
             android:theme="@style/AppTheme.ActionBar.Back"
-            android:windowSoftInputMode="stateVisible" >
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.trackcell.securetalk.Main" />
+                android:value="com.trackcell.securetalk.Landing" />
         </activity>
         <activity
             android:name=".Profile"
             android:icon="@null"
             android:label="@string/profile"
             android:logo="@color/transparent"
-            android:parentActivityName=".Main"
+            android:parentActivityName=".Landing"
             android:theme="@style/AppTheme.ActionBar.Back" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.trackcell.securetalk.Main" />
+                android:value="com.trackcell.securetalk.Landing" />
         </activity>
         <activity
             android:name=".Parameters"
             android:icon="@null"
             android:label="@string/action_settings"
             android:logo="@color/transparent"
-            android:parentActivityName=".Main"
+            android:parentActivityName=".Landing"
             android:theme="@style/AppTheme.ActionBar.Back" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.trackcell.securetalk.Main" />
+                android:value="com.trackcell.securetalk.Landing" />
         </activity>
         <activity
             android:name=".About"
             android:icon="@null"
             android:label="@string/title_activity_about"
             android:logo="@color/transparent"
-            android:parentActivityName=".Main"
+            android:parentActivityName=".Landing"
             android:theme="@style/AppTheme.ActionBar.Back" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.trackcell.securetalk.Main" />
+                android:value="com.trackcell.securetalk.Landing" />
         </activity>
 
         <service

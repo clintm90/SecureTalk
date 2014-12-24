@@ -55,5 +55,7 @@
     <string name="navigation_drawer_close">Fermer</string>
     <string name="navigation_drawer_open">Afficher</string>
     <string name="title_activity_landing">Acc</string>
+    <string name="sendphoto">Envoyer une photo</string>
+    <string name="sendfile">Envoyer un fichier</string>
 
 </resources>

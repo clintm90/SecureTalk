@@ -67,6 +67,7 @@ public class Chat extends Activity
     private KeyPair mKP;
     private Cipher mCipher;
     private KeyFactory mKeyFactory;
+    private ChatListAdapter mChatListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -96,20 +97,24 @@ public class Chat extends Activity
             mKeyPairGenerator = null;
         }
 
+        mChatListAdapter = new ChatListAdapter(this, CHATLIST);
+
         setContentView(R.layout.activity_chat);
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
         this.setTitle(getIntent().getStringExtra("contact"));
-
-        Task.execute(getIntent().getStringExtra("recipient"), mPrefsGlobal.getString("owner", "none"));
-        input();
+        
+        //Task.execute(getIntent().getStringExtra("recipient"), mPrefsGlobal.getString("owner", "none"));
+        //input();
 
         mMainContent = (ListView) findViewById(R.id.mainContentChat);
         mChatField = (EditText) findViewById(R.id.chatField);
         mNoMessages = (TextView) findViewById(R.id.noMessages);
 
         mChatField.setCursorVisible(false);
+
+        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mChatField, InputMethodManager.SHOW_FORCED);
 
         mChatField.setOnClickListener(new View.OnClickListener()
         {
@@ -204,7 +209,6 @@ public class Chat extends Activity
                 JSONObject mRoot = new JSONObject(params);
                 JSONObject mItems = mRoot.getJSONObject("result");
 
-                ChatListAdapter mChatListAdapter = new ChatListAdapter(getApplicationContext(), CHATLIST);
                 mChatListAdapter.clear();
 
                 for (i = 0; i < mItems.getJSONArray("item").length(); i++)
@@ -238,15 +242,14 @@ public class Chat extends Activity
 
     public void input()
     {
-        findViewById(R.id.chatField).requestFocus();
+        mChatField.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(findViewById(R.id.chatField), InputMethodManager.SHOW_IMPLICIT);
+        imm.showSoftInput(findViewById(R.id.chatField), InputMethodManager.SHOW_FORCED);
     }
 
     public void addMessage(MenuItem item)
     {
-        ChatListAdapter mChatListAdapter = new ChatListAdapter(this, CHATLIST);
-        mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, "0", "salut", "Ok d'accord"));
+        mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, "0", "salut", "Ok d'accord"));
         mMainContent.setAdapter(mChatListAdapter);
     }
 
@@ -259,7 +262,6 @@ public class Chat extends Activity
 
     public void sendCurrentMessage(MenuItem item)
     {
-        final ChatListAdapter mChatListAdapter = new ChatListAdapter(this, CHATLIST);
         String currentMessage = mChatField.getText().toString();
         long timestamp = System.currentTimeMillis() * 1000;
 
@@ -295,7 +297,7 @@ public class Chat extends Activity
                                 }
                                 
                                 JSONObject returnValue = new JSONObject(rts);
-                                if (returnValue.getInt("response") != 1)
+                                if (returnValue.getInt("response") == 1)
                                 {
                                     return params[0];
                                 }
@@ -349,6 +351,7 @@ public class Chat extends Activity
                         {
                             mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, "Il y à quelques secondes", "salut", params));
                             mMainContent.setAdapter(mChatListAdapter);
+                            mNoMessages.setVisibility(View.INVISIBLE);
                         }
                         else
                         {
@@ -380,7 +383,7 @@ public class Chat extends Activity
 
     public String RSAEncrypt(String value) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException, DecoderException
     {
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(Hex.decodeHex(new String(getIntent().getStringExtra("public_key")).toCharArray()));
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(Hex.decodeHex(getIntent().getStringExtra("public_key").toCharArray()));
 
         mCipher.init(Cipher.ENCRYPT_MODE, mKeyFactory.generatePublic(spec));
         byte[] stringBytes = value.getBytes("UTF-8");
@@ -390,7 +393,7 @@ public class Chat extends Activity
 
     public String RSADecrypt(String value) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, DecoderException, NoSuchAlgorithmException, InvalidKeySpecException
     {
-        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(Hex.decodeHex(new String(mPrefsGlobal.getString("private_key", "none")).toCharArray()));
+        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(Hex.decodeHex(mPrefsGlobal.getString("private_key", "none").toCharArray()));
 
         mCipher.init(Cipher.DECRYPT_MODE, mKeyFactory.generatePrivate(spec));
         byte[] stringBytes = Hex.decodeHex(value.toCharArray());
@@ -419,17 +422,20 @@ public class Chat extends Activity
             @Override
             protected void onPostExecute(String input)
             {
-                ChatListAdapter mChatListAdapter = new ChatListAdapter(getApplicationContext(), CHATLIST);
-                mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, "0", "salut", "Ok d'accord").putPhoto(input));
+                mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, "23:47", "salut", "Ok d'accord").putPhoto(input));
                 mMainContent.setAdapter(mChatListAdapter);
                 //mChatField.setText(input);
-                //Log.i("BASE64", input);
                 //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("data:image/jpg;base64," + input));
                 //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
                 //startActivity(intent);
             }
         };
         Task.execute(bitmap);
+    }
+
+    private void RefreshAdapter(ChatListAdapter adapter)
+    {
+        mChatListAdapter.notifyDataSetChanged();
     }
 
     @Override

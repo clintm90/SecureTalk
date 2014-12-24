@@ -31,20 +31,21 @@ public class ChatListAdapter extends ArrayAdapter<EnumChat>
         View rowView = inflater.inflate(R.layout.model_chatlist, parent, false);
         rowView.setTag(values.get(position));
 
-        ImageView chatListOther = (ImageView)rowView.findViewById(R.id.model_chatList_other);
-        TextView chatListTitle = (TextView)rowView.findViewById(R.id.model_chatList_title);
-        TextView chatListTimestamp = (TextView)rowView.findViewById(R.id.model_chatList_timestamp);
+        ImageView mChatListOther = (ImageView)rowView.findViewById(R.id.model_chatList_other);
+        TextView mChatListTitle = (TextView)rowView.findViewById(R.id.model_chatList_title);
+        TextView mChatListTimestamp = (TextView)rowView.findViewById(R.id.model_chatList_timestamp);
 
-        chatListTitle.setText(values.get(position).Title);
-        chatListTimestamp.setText(values.get(position).Timestamp);
+        mChatListTitle.setText(values.get(position).Title);
+        mChatListTimestamp.setText(values.get(position).Timestamp);
 
         if(values.get(position).isPhoto)
         {
+            mChatListTitle.setBackgroundResource(R.drawable.ic_photo_me);
         }
 
         if(values.get(position).Error)
         {
-            chatListOther.setImageDrawable(parent.getResources().getDrawable(R.drawable.ic_info_error));
+            mChatListOther.setImageDrawable(parent.getResources().getDrawable(R.drawable.ic_info_error));
             //chatListOther.setText("Erreur de l'envoi");
             //chatListOther.setTextColor(parent.getResources().getColor(R.color.red));
         }

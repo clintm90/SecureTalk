@@ -59,5 +59,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_activity_first_launch">ActivityFirstLaunch</string>
     <string name="title_activity_first_launch">FirstLau</string>
+    <string name="sendphoto">Send photo</string>
+    <string name="sendfile">Send file</string>
 
 </resources>
