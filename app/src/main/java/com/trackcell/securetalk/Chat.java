@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -48,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -71,7 +73,7 @@ public class Chat extends Activity
     private KeyFactory mKeyFactory;
     private ChatListAdapter mChatListAdapter;
     
-    private Timer mTimer;
+    private Timer mTimer = new Timer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -115,8 +117,8 @@ public class Chat extends Activity
 
         mChatField.setCursorVisible(false);
 
-        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mChatField, InputMethodManager.SHOW_FORCED);
-
+        input();
+        
         /*TimerTask task = new TimerTask()
         {
             @Override
@@ -362,17 +364,12 @@ public class Chat extends Activity
         }
     };*/
 
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-    }
-
     public void input()
     {
-        mChatField.requestFocus();
+        /*mChatField.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(findViewById(R.id.chatField), InputMethodManager.SHOW_FORCED);
+        imm.showSoftInput(findViewById(R.id.chatField), InputMethodManager.SHOW_FORCED);*/
+        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mChatField, InputMethodManager.SHOW_FORCED);
     }
 
     public void addMessage(MenuItem item)
@@ -463,7 +460,7 @@ public class Chat extends Activity
                         if (netInfo == null || !netInfo.isConnectedOrConnecting())
                         {
                             setResult(RESULT_OK, new Intent().putExtra("result", 3).putExtra("error_content", getResources().getString(R.string.noconnection)));
-                            finish();
+                            CloseApp();
                         }
                         else
                         {
@@ -484,7 +481,7 @@ public class Chat extends Activity
                         else
                         {
                             setResult(RESULT_OK, new Intent().putExtra("result", 1));
-                            finish();
+                            CloseApp();
                         }
 
                         mChatField.setHint(R.string.entermessage);
@@ -500,7 +497,7 @@ public class Chat extends Activity
             if (item != null)
             {
                 setResult(RESULT_OK, new Intent().putExtra("result", -1));
-                finish();
+                CloseApp();
             }
         }
         else
@@ -556,9 +553,27 @@ public class Chat extends Activity
         SendPhotoTask.execute(bitmap);
     }
 
-    private void RefreshAdapter(ChatListAdapter adapter)
+    private TimerTask Task = new TimerTask()
     {
-        mChatListAdapter.notifyDataSetChanged();
+        @Override
+        public void run()
+        {
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    Toast.makeText(getApplicationContext(), "salut", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    };
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        mTimer.scheduleAtFixedRate(Task, 85, Initialize.RefreshTime);
     }
 
     @Override
@@ -607,14 +622,19 @@ public class Chat extends Activity
         {
             case android.R.id.home:
                 setResult(RESULT_OK, new Intent().putExtra("result", 1));
-                //Task.cancel(true);
-                //mTimer.cancel();
-                finish();
+                CloseApp();
                 return true;
 
             case R.id.action_settings:
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void CloseApp()
+    {
+        Task.cancel();
+        mTimer.cancel();
+        finish();
     }
 }

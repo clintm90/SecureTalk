@@ -7,6 +7,7 @@ public class Initialize extends Application
 {
     public static String SecureTalkServer = "http://securetalk-sql.sourceforge.net/";
     public static Intent mMessageWorkerService;
+    public static long RefreshTime = 5000;
 
     @Override
     public void onCreate()
