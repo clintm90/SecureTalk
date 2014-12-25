@@ -25,6 +25,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
+
 public class PlaceholderFragment extends Fragment
 {
     private SharedPreferences mPrefs;
@@ -53,10 +55,40 @@ public class PlaceholderFragment extends Fragment
     {
         super.onActivityCreated(savedInstanceState);
     }
+    
+    public void onEventMainThread(String input)
+    {
+        try
+        {
+            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1)
+            {
+                final DBSecureTalk mDBSecureTalk = new DBSecureTalk(getActivity().getApplicationContext(), "SecureTalk.db", null, 1, null);
+                List<String> mSenders = new ArrayList<String>();
+                try
+                {
+                    for (String current : input.split(","))
+                    {
+                        mSenders.add(current);
+                    }
+                    Populate(mDBSecureTalk, mSenders);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            //TODO: implement notification
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        EventBus.getDefault().register(this);
+        
         final DBSecureTalk mDBSecureTalk = new DBSecureTalk(getActivity().getApplicationContext(), "SecureTalk.db", null, 1, null);
 
         mPrefs = getActivity().getSharedPreferences("securetalk_elements", getActivity().MODE_APPEND);
@@ -70,40 +102,7 @@ public class PlaceholderFragment extends Fragment
             case 1:
                 View rootView = inflater.inflate(R.layout.fragment_landing, container, false);
                 mMainContent = (ListView) rootView.findViewById(R.id.MainContainer);
-
-                final ContactListAdapter mContactListAdapter = new ContactListAdapter(getActivity().getApplicationContext(), mDBSecureTalk.GetElements());
-
-                mContactListAdapter.add((new EnumContact(getActivity().getApplicationContext(), -1, "785b86f1ea73414d6c0493b2411421ba", "Clint Mourlevat", "Pas de nouveau message", "305c300d06092a864886f70d0101010500034b003048024100ac03087d9331699a46bee4d8a185f96946388e1e92bbf6cd343eaf3e83c180e0a79aea5aaabb7482c035143b3c25285fef5e22b527b6e3b64b06ab92d171ee030203010001", false)).bwPhoto());
-
-                mMainContent.setAdapter(mContactListAdapter);
-
-                mMainContent.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        Landing.BWImageView(false, (ImageView) view.findViewById(R.id.model_contactList_icon), 0);
-                        Intent intent = new Intent(getActivity().getApplicationContext(), Chat.class);
-                        intent.putExtra("contact", ((EnumContact) view.getTag()).Name);
-                        intent.putExtra("public_key", ((EnumContact) view.getTag()).PublicKey);
-                        intent.putExtra("recipient", ((EnumContact) view.getTag()).ID);
-                        getActivity().startActivityForResult(intent, 1);
-                    }
-                });
-
-                mMainContent.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
-                {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        mDBSecureTalk.RemoveElement(((EnumContact) view.getTag()).RowID);
-
-                        getFragmentManager().beginTransaction()
-                                .replace(R.id.container, PlaceholderFragment.newInstance(1))
-                                .commit();
-                        return false;
-                    }
-                });
+                Populate(mDBSecureTalk, new ArrayList<String>());
                 return rootView;
 
             case 2:
@@ -136,7 +135,7 @@ public class PlaceholderFragment extends Fragment
                                 {
                                     String email = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                                     //String gravatarID = new String(Hex.encodeHex(DigestUtils.md5(email)));
-                                    mInviteListAdapter.add((new EnumContact(getActivity().getApplicationContext(), -1, email, name, email, null, false)).hideArrow().hidePhoto().singleLine());
+                                    mInviteListAdapter.add((new EnumContact(getActivity().getApplicationContext(), -1, email, name, email, null)).hideArrow().hidePhoto().singleLine());
                                 }
                                 emailCur.close();
                             }
@@ -194,6 +193,43 @@ public class PlaceholderFragment extends Fragment
             default:
                 return null;
         }
+    }
+
+    private void Populate(final DBSecureTalk database, List<String> senders)
+    {
+        final ContactListAdapter mContactListAdapter = new ContactListAdapter(getActivity().getApplicationContext(), database.GetElements(senders));
+
+        mContactListAdapter.add((new EnumContact(getActivity().getApplicationContext(), -1, "785b86f1ea73414d6c0493b2411421ba", "Clint Mourlevat", "Pas de nouveau message", "305c300d06092a864886f70d0101010500034b003048024100ac03087d9331699a46bee4d8a185f96946388e1e92bbf6cd343eaf3e83c180e0a79aea5aaabb7482c035143b3c25285fef5e22b527b6e3b64b06ab92d171ee030203010001")).bwPhoto().newMessage(3));
+
+        mMainContent.setAdapter(mContactListAdapter);
+
+        mMainContent.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                Landing.BWImageView(false, (ImageView) view.findViewById(R.id.model_contactList_icon), 0);
+                Intent intent = new Intent(getActivity().getApplicationContext(), Chat.class);
+                intent.putExtra("contact", ((EnumContact) view.getTag()).Name);
+                intent.putExtra("public_key", ((EnumContact) view.getTag()).PublicKey);
+                intent.putExtra("recipient", ((EnumContact) view.getTag()).ID);
+                getActivity().startActivityForResult(intent, 1);
+            }
+        });
+
+        mMainContent.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                database.RemoveElement(((EnumContact) view.getTag()).RowID);
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, PlaceholderFragment.newInstance(1))
+                        .commit();
+                return false;
+            }
+        });
     }
 
     @Override

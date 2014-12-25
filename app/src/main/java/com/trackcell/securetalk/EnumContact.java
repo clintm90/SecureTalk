@@ -10,8 +10,10 @@ public class EnumContact implements Serializable
 {
     public boolean ArrowSelectable = false;
     public boolean isPaddingRight = true;
-    public boolean isPhtoBW = false;
+    public boolean isPhotoBW = false;
     public boolean isSingleLine = false;
+    public boolean isNewMessage = false;
+    
     public int PhotoVisibility = View.VISIBLE;
     public int ArrowVisibility = View.VISIBLE;
 
@@ -21,20 +23,14 @@ public class EnumContact implements Serializable
     public Drawable Photo;
     public String Description;
     public String PublicKey;
-    public boolean Bold;
 
-    public EnumContact(Context context, int rowID, String gravatarID, String name, String description, String publicKey, boolean bold)
+    public EnumContact(Context context, int rowID, String gravatarID, String name, String description, String publicKey)
     {
         RowID = rowID;
         ID = gravatarID;
         Name = name;
         Description = description;
         PublicKey = publicKey;
-        Bold = bold;
-        /*if(photo != null)
-        {
-            Photo = photo;
-        }*/
     }
 
     public EnumContact validArrow()
@@ -58,13 +54,23 @@ public class EnumContact implements Serializable
 
     public EnumContact bwPhoto()
     {
-        isPhtoBW = true;
+        isPhotoBW = true;
         return this;
     }
 
     public EnumContact singleLine()
     {
         isSingleLine = true;
+        return this;
+    }
+    
+    public EnumContact newMessage(int number)
+    {
+        isNewMessage = true;
+        if(number > 0)
+        {
+            isPhotoBW = true;
+        }
         return this;
     }
 }

@@ -19,6 +19,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.widget.DrawerLayout;
@@ -591,6 +592,17 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                 .commit();
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public static class PrefsFragment extends PreferenceFragment
+    {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            // Load the preferences from an XML resource
+            addPreferencesFromResource(R.xml.parameters);
+        }
     }
 
     @Override

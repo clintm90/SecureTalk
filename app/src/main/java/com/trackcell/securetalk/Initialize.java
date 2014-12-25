@@ -7,7 +7,7 @@ import android.text.format.DateUtils;
 public class Initialize extends Application
 {
     public static String SecureTalkServer = "http://securetalk-sql.sourceforge.net/";
-    public static Intent mMessageWorkerService;
+    public static Intent MessageWorkerService;
     public static long ActivityRefreshTime = DateUtils.SECOND_IN_MILLIS * 5;
     public static long ServiceRefreshTime = DateUtils.SECOND_IN_MILLIS * 10;
     public static long InitTime = 50;
@@ -17,8 +17,8 @@ public class Initialize extends Application
     {
         super.onCreate();
 
-        mMessageWorkerService = new Intent(this, MessageWorker.class);
-        startService(mMessageWorkerService);
+        MessageWorkerService = new Intent(this, MessageWorker.class);
+        startService(MessageWorkerService);
     }
     
     @DebugOnly

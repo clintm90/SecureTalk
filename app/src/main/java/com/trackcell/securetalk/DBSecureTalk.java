@@ -59,7 +59,7 @@ public class DBSecureTalk extends SQLiteOpenHelper
         }
     }
 
-    public List<EnumContact> GetElements()
+    public List<EnumContact> GetElements(List<String> senders)
     {
         List<EnumContact> mRTS = new ArrayList<EnumContact>();
 
@@ -68,7 +68,14 @@ public class DBSecureTalk extends SQLiteOpenHelper
 
         while(result.moveToNext())
         {
-            mRTS.add(new EnumContact(mContext, result.getInt(0), result.getString(1), result.getString(2), result.getString(3), result.getString(4), false).singleLine().bwPhoto());
+            if (senders.contains(result.getString(1)))
+            {
+                mRTS.add(new EnumContact(mContext, result.getInt(0), result.getString(1), result.getString(2), result.getString(3), result.getString(4)).singleLine().newMessage(2));
+            }
+            else
+            {
+                mRTS.add(new EnumContact(mContext, result.getInt(0), result.getString(1), result.getString(2), result.getString(3), result.getString(4)).singleLine().bwPhoto());
+            }
         }
 
         return mRTS;

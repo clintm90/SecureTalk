@@ -44,5 +44,6 @@ dependencies {
     compile 'com.googlecode.libphonenumber:libphonenumber:6.3'
     compile 'com.github.sogyf:goja-qrcode:0.1.2'
     compile 'de.bripkens:gravatar4java:1.2'
+    compile 'de.greenrobot:eventbus:2.4.0'
     //compile fileTree(dir: 'libs', include: ['*.jar'])
 }

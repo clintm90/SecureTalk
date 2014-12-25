@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.preference.PreferenceFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,7 +14,7 @@ import android.view.ViewGroup;
  * Use the {@link Settings#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Settings extends Fragment
+public class Settings extends PreferenceFragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -62,14 +60,15 @@ public class Settings extends Fragment
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        addPreferencesFromResource(R.xml.parameters);
     }
 
-    @Override
+    /*@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
         return rootView;
-    }
+    }*/
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri)

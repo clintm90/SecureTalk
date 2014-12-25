@@ -463,6 +463,7 @@ public class Chat extends Activity
     public void onStart()
     {
         super.onStart();
+        stopService(Initialize.MessageWorkerService);
         //stopService(new Intent(this, MessageWorker.class));
         Input();
         mTimer.scheduleAtFixedRate(MainLoop, Initialize.InitTime, Initialize.ActivityRefreshTime);

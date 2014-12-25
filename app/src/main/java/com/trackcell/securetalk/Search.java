@@ -176,7 +176,7 @@ public class Search extends Activity
                     {
                         JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
                         if(!mPrefsGlobal.getString("owner", "none").equals(currentObject.getString("id")))
-                            mContactList.add(new EnumContact(getApplicationContext(), -1, currentObject.getString("id"), currentObject.getString("name"), currentObject.getString("description"), currentObject.getString("public_key"), false).hideArrow().bwPhoto().singleLine());
+                            mContactList.add(new EnumContact(getApplicationContext(), -1, currentObject.getString("id"), currentObject.getString("name"), currentObject.getString("description"), currentObject.getString("public_key")).hideArrow().bwPhoto().singleLine());
                         mResultContent.setAdapter(mSearchListAdapter);
                     }
                 }
@@ -228,7 +228,7 @@ public class Search extends Activity
             {
                 IPN = number;
             }
-            mContactList.add(new EnumContact(getApplicationContext(), -1, "785b86f1ea73414d6c0493b2411421ba", name, IPN, "none", false).hidePhoto().hideArrow());
+            mContactList.add(new EnumContact(getApplicationContext(), -1, "785b86f1ea73414d6c0493b2411421ba", name, IPN, "none").hidePhoto().hideArrow());
         }
         phones.close();
         mResultContent.setAdapter(mContactListAdapter);

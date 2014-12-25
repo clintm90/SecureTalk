@@ -1,6 +1,7 @@
 package com.trackcell.securetalk;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,11 +42,14 @@ public class ContactListAdapter extends ArrayAdapter<EnumContact>
 
         if(values.get(position).PhotoVisibility == View.VISIBLE)
         {
-            Landing.LoadGravatar(mContext, contactListIcon, values.get(position).ID, values.get(position).isPhtoBW);
+            Landing.LoadGravatar(mContext, contactListIcon, values.get(position).ID, values.get(position).isPhotoBW);
         }
 
-        //if(values.get(position).Bold)
-            //contactListTitle.setTypeface(Typeface.DEFAULT_BOLD);
+        if(values.get(position).isNewMessage)
+        {
+            //contactListTitle.setTextColor(parent.getResources().getColor(R.color.blue));
+            contactListTitle.setTypeface(Typeface.DEFAULT_BOLD);
+        }
 
         contactListTitle.setText(values.get(position).Name);
         contactListDescription.setText(values.get(position).Description);

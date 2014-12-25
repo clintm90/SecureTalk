@@ -11,6 +11,8 @@ import com.google.android.gms.ads.AdView;
 
 public class AdFragment extends Fragment
 {
+    AdView mAdView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -21,8 +23,22 @@ public class AdFragment extends Fragment
     public void onActivityCreated(Bundle bundle)
     {
         super.onActivityCreated(bundle);
-        AdView mAdView = (AdView) getView().findViewById(R.id.adView);
+        mAdView = (AdView) getView().findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+    }
+
+    @Override
+    public void onPause()
+    {
+        mAdView.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        mAdView.resume();
     }
 }
