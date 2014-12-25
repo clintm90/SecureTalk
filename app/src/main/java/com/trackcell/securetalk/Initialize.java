@@ -18,7 +18,7 @@ public class Initialize extends Application
         super.onCreate();
 
         MessageWorkerService = new Intent(this, MessageWorker.class);
-        startService(MessageWorkerService);
+        getApplicationContext().startService(MessageWorkerService);
     }
     
     @DebugOnly

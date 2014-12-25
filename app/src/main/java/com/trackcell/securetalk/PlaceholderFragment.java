@@ -58,29 +58,22 @@ public class PlaceholderFragment extends Fragment
     
     public void onEventMainThread(String input)
     {
-        try
+        if(getArguments().getInt(ARG_SECTION_NUMBER) == 1)
         {
-            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1)
+            final DBSecureTalk mDBSecureTalk = new DBSecureTalk(getActivity().getApplicationContext(), "SecureTalk.db", null, 1, null);
+            List<String> mSenders = new ArrayList<String>();
+            try
             {
-                final DBSecureTalk mDBSecureTalk = new DBSecureTalk(getActivity().getApplicationContext(), "SecureTalk.db", null, 1, null);
-                List<String> mSenders = new ArrayList<String>();
-                try
+                for (String current : input.split(","))
                 {
-                    for (String current : input.split(","))
-                    {
-                        mSenders.add(current);
-                    }
-                    Populate(mDBSecureTalk, mSenders);
+                    mSenders.add(current);
                 }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+                Populate(mDBSecureTalk, mSenders);
             }
-        }
-        catch(Exception e)
-        {
-            //TODO: implement notification
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 

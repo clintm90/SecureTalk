@@ -62,5 +62,6 @@
     <string name="sendphoto">Send photo</string>
     <string name="sendfile">Send file</string>
     <string name="photo">photo</string>
+    <string name="newmessage">New</string>
 
 </resources>

@@ -18,7 +18,7 @@
 
     <TextView
         android:id="@+id/model_contactList_title"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/model_contactList_icon"
         android:textSize="19dp"
@@ -48,5 +48,22 @@
         android:layout_alignParentEnd="true"
         android:src="@drawable/ic_action_arrow_right"
         android:paddingTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/newmessage"
+        android:id="@+id/model_contactList_status"
+        android:layout_alignTop="@+id/model_contactList_icon"
+        android:layout_toRightOf="@+id/model_contactList_title"
+        android:layout_toEndOf="@+id/model_contactList_title"
+        android:layout_marginLeft="7dp"
+        android:textSize="10sp"
+        android:background="@drawable/new_message"
+        android:textColor="@color/white"
+        android:textIsSelectable="false"
+        android:layout_marginTop="6dp"
+        android:padding="3dp"
+        android:visibility="gone"/>
 
 </RelativeLayout>

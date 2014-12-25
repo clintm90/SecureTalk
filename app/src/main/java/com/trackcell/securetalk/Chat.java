@@ -411,6 +411,8 @@ public class Chat extends Activity
                         JSONObject mRoot = new JSONObject(input);
                         JSONObject mItems = mRoot.getJSONObject("result");
 
+                        mChatListAdapter.clear();
+                        
                         for (i = 0; i < mItems.getJSONArray("item").length(); i++)
                         {
                             JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
@@ -463,8 +465,7 @@ public class Chat extends Activity
     public void onStart()
     {
         super.onStart();
-        stopService(Initialize.MessageWorkerService);
-        //stopService(new Intent(this, MessageWorker.class));
+        getApplicationContext().stopService(Initialize.MessageWorkerService);
         Input();
         mTimer.scheduleAtFixedRate(MainLoop, Initialize.InitTime, Initialize.ActivityRefreshTime);
     }

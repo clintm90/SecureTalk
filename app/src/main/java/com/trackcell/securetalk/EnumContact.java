@@ -23,6 +23,7 @@ public class EnumContact implements Serializable
     public Drawable Photo;
     public String Description;
     public String PublicKey;
+    public int Number;
 
     public EnumContact(Context context, int rowID, String gravatarID, String name, String description, String publicKey)
     {
@@ -66,6 +67,7 @@ public class EnumContact implements Serializable
     
     public EnumContact newMessage(int number)
     {
+        Number = number;
         isNewMessage = true;
         if(number > 0)
         {

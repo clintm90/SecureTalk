@@ -1,7 +1,6 @@
 package com.trackcell.securetalk;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,48 +30,49 @@ public class ContactListAdapter extends ArrayAdapter<EnumContact>
 
         View rowView = inflater.inflate(R.layout.model_contactlist, parent, false);
 
-        final ImageView contactListIcon = (ImageView)rowView.findViewById(R.id.model_contactList_icon);
-        TextView contactListTitle = (TextView)rowView.findViewById(R.id.model_contactList_title);
-        TextView contactListDescription = (TextView)rowView.findViewById(R.id.model_contactList_description);
-        ImageView contactListArrow = (ImageView)rowView.findViewById(R.id.model_contactList_arrow);
+        final ImageView mContactListIcon = (ImageView)rowView.findViewById(R.id.model_contactList_icon);
+        TextView mContactListTitle = (TextView)rowView.findViewById(R.id.model_contactList_title);
+        TextView mContactListDescription = (TextView)rowView.findViewById(R.id.model_contactList_description);
+        ImageView mContactListArrow = (ImageView)rowView.findViewById(R.id.model_contactList_arrow);
+        TextView mContactListStatus = (TextView)rowView.findViewById(R.id.model_contactList_status);
 
-        contactListArrow.setVisibility(values.get(position).ArrowVisibility);
+        mContactListArrow.setVisibility(values.get(position).ArrowVisibility);
 
-        contactListIcon.setVisibility(values.get(position).PhotoVisibility);
+        mContactListIcon.setVisibility(values.get(position).PhotoVisibility);
 
         if(values.get(position).PhotoVisibility == View.VISIBLE)
         {
-            Landing.LoadGravatar(mContext, contactListIcon, values.get(position).ID, values.get(position).isPhotoBW);
+            Landing.LoadGravatar(mContext, mContactListIcon, values.get(position).ID, values.get(position).isPhotoBW);
         }
 
         if(values.get(position).isNewMessage)
         {
-            //contactListTitle.setTextColor(parent.getResources().getColor(R.color.blue));
-            contactListTitle.setTypeface(Typeface.DEFAULT_BOLD);
+            //mContactListTitle.setTypeface(Typeface.DEFAULT_BOLD);
+            mContactListStatus.setVisibility(View.VISIBLE);
         }
 
-        contactListTitle.setText(values.get(position).Name);
-        contactListDescription.setText(values.get(position).Description);
+        mContactListTitle.setText(values.get(position).Name);
+        mContactListDescription.setText(values.get(position).Description);
 
         if(values.get(position).isPaddingRight)
         {
-            contactListTitle.setPadding(0, 7, 40, 0);
-            contactListDescription.setPadding(0, 0, 40, 0);
+            mContactListTitle.setPadding(0, 7, 5, 0);
+            mContactListDescription.setPadding(0, 0, 40, 0);
         }
         else
         {
-            contactListTitle.setPadding(0, 7, 5, 0);
-            contactListDescription.setPadding(0, 0, 5, 0);
+            mContactListTitle.setPadding(0, 7, 5, 0);
+            mContactListDescription.setPadding(0, 0, 5, 0);
         }
 
         if(values.get(position).ArrowSelectable)
         {
-            contactListArrow.setImageDrawable(parent.getResources().getDrawable(R.drawable.ic_action_arrow_valid));
+            mContactListArrow.setImageDrawable(parent.getResources().getDrawable(R.drawable.ic_action_arrow_valid));
         }
 
         if(values.get(position).isSingleLine)
         {
-            contactListDescription.setMaxLines(1);
+            mContactListDescription.setMaxLines(1);
         }
 
         rowView.setTag(values.get(position));
