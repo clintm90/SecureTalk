@@ -21,7 +21,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.v4.widget.DrawerLayout;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
@@ -122,9 +121,81 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
 
     public void InitUser()
     {
-        //TODO: implement register timeout
         mKP = mKeyPairGenerator.generateKeyPair();
         final Context parent = this;
+        
+        if (!mPrefsGlobal.getBoolean("initialized", false) && mPrefsGlobal.getString("owner", "none").equals("none") && mPrefsGlobal.getString("password", "none").equals("none") && mPrefsGlobal.getString("private_key", "none").equals("none"))
+        {
+            Login(false, null);
+        }
+        else
+        {
+            final ProgressDialog alertDialog = ProgressDialog.show(this, "", getString(R.string.loading));
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            alertDialog.setCancelable(false);
+            alertDialog.show();
+
+            AsyncTask<String, Void, String> LoginTask = new AsyncTask<String, Void, String>()
+            {
+                @Override
+                protected String doInBackground(String... params)
+                {
+                    try
+                    {
+                        String rts = "", c;
+                        URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id="+ params[0] + "&password=" + params[1] + "&put=false");
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
+
+                        while ((c = reader.readLine()) != null)
+                            rts += c;
+                        return rts;
+                    }
+                    catch(UnknownHostException e)
+                    {
+                        NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
+                        if(netInfo == null || !netInfo.isConnectedOrConnecting())
+                            cancel(true);
+                        return null;
+                    }
+                    catch (Exception e)
+                    {
+                        cancel(true);
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+
+                @Override
+                protected void onCancelled()
+                {
+                }
+
+                @Override
+                protected void onPostExecute(String input)
+                {
+                    try
+                    {
+                        alertDialog.dismiss();
+                        JSONObject registerValue = new JSONObject(input);
+                        if (registerValue.getInt("response") != 1)
+                        {
+                            Login(true, getString(R.string.noaccount));
+                        }
+                    }
+                    catch (JSONException e)
+                    {
+                        Login(true, getString(R.string.noconnection));
+                        e.printStackTrace();
+                    }
+                }
+            };
+            LoginTask.execute(mPrefsGlobal.getString("owner", "none"), mPrefsGlobal.getString("password", "none"));
+        }
+        
+        /*//TODO: implement register timeout
+        mKP = mKeyPairGenerator.generateKeyPair();
+        final Context parent = this;
+        
         final ProgressDialog alertDialog = ProgressDialog.show(this, "", getString(R.string.register));
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         alertDialog.setCancelable(false);
@@ -382,13 +453,13 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                 }
             };
             
-            if (mPrefsGlobal.getBoolean("initialized", false) && !mPrefsGlobal.getString("owner", "none").equals("none") && !mPrefsGlobal.getString("private_key", "none").equals("none"))
+            if (mPrefsGlobal.getBoolean("initialized", false) && !mPrefsGlobal.getString("owner", "none").equals("none") && !mPrefsGlobal.getString("password", "none").equals("none") && !mPrefsGlobal.getString("private_key", "none").equals("none"))
             {
-                InitUserTask.execute(true, mPrefsGlobal.getString("owner", "none"), mKP);
+                InitUserTask.execute(true, mPrefsGlobal.getString("owner", "none"), mPrefsGlobal.getString("password", "none"), mKP);
             }
             else
             {
-                InitUserTask.execute(false, mAccountsMailID, mKP);
+                InitUserTask.execute(false, mAccountsMailID, "test", mKP);
             }
         }
         else
@@ -415,7 +486,245 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
             });
             alertDialogNewAccount.create();
             alertDialogNewAccount.show();
+        }*/
+    }
+
+    private void Login(boolean error, String errorContent)
+    {
+        final Account aaccount[] = AccountManager.get(getApplicationContext()).getAccountsByType("com.google");
+        
+        final Context parent = this;
+        AlertDialog.Builder builder = new AlertDialog.Builder(parent);
+        final View mModelLogin = getLayoutInflater().inflate(R.layout.model_login, null);
+
+        final EditText mMail = ((EditText)mModelLogin.findViewById(R.id.model_login_mail));
+        final EditText mPassword = ((EditText)mModelLogin.findViewById(R.id.model_login_password));
+        
+        mMail.setText(aaccount[0].name);
+
+        if(error)
+        {
+            TextView mError = (TextView)mModelLogin.findViewById(R.id.model_login_error);
+            mError.setVisibility(View.VISIBLE);
+            mError.setText(errorContent);
         }
+
+        builder.setView(mModelLogin);
+        builder.setCancelable(false);
+        builder.setNeutralButton(getString(R.string.newaccount), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialoginterface, int i)
+            {
+                NewAccount(false, null);
+                //android.os.Process.killProcess(android.os.Process.myPid());
+                //System.exit(0);
+            }
+        });
+
+        builder.setPositiveButton(getString(R.string.connect), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialoginterface, int i)
+            {
+                if(!mMail.getText().toString().contains("@"))
+                {
+                    Login(true, getString(R.string.nomail));
+                }
+                else if(mPassword.getText().toString().length() < 3)
+                {
+                    Login(true, getString(R.string.shortpassword));
+                }
+                else
+                {
+                    AsyncTask<String, Void, String> LoginTask = new AsyncTask<String, Void, String>()
+                    {
+                        @Override
+                        protected String doInBackground(String... params)
+                        {
+                            try
+                            {
+                                String rts = "", c;
+                                URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id="+ params[0] + "&password=" + params[1] + "&put=false");
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
+
+                                while ((c = reader.readLine()) != null)
+                                    rts += c;
+                                return rts;
+                            }
+                            catch(UnknownHostException e)
+                            {
+                                NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
+                                if(netInfo == null || !netInfo.isConnectedOrConnecting())
+                                    cancel(true);
+                                return null;
+                            }
+                            catch (Exception e)
+                            {
+                                cancel(true);
+                                e.printStackTrace();
+                                return null;
+                            }
+                        }
+                        
+                        @Override
+                        protected void onCancelled()
+                        {
+                        }
+                        
+                        @Override
+                        protected void onPostExecute(String input)
+                        {
+                            try
+                            {
+                                JSONObject registerValue = new JSONObject(input);
+                                if (registerValue.getInt("response") == 1)
+                                {
+                                    String mPublicKey = new String(Hex.encodeHex((mKP.getPublic().getEncoded())));
+                                    String mPrivateKey = new String(Hex.encodeHex(mKP.getPrivate().getEncoded()));
+                                    
+                                    mStorageGlobal.putBoolean("initialized", true);
+                                    mStorageGlobal.putString("owner", new String(Hex.encodeHex(DigestUtils.md5(mMail.getText().toString()))));
+                                    mStorageGlobal.putString("name", registerValue.getString("name"));
+                                    mStorageGlobal.putString("password", new String(Hex.encodeHex(DigestUtils.md5(mPassword.getText().toString()))));
+                                    mStorageGlobal.putString("public_key", mPublicKey);
+                                    mStorageGlobal.putString("private_key", mPrivateKey);
+                                    mStorageGlobal.apply();
+                                    recreate();
+                                    //UpdatePublicKeyTask.execute(input[2].toString(), mPublicKey);
+                                }
+                                else
+                                {
+                                    Login(true, getString(R.string.noaccount));
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Login(true, getString(R.string.noconnection));
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    LoginTask.execute(new String(Hex.encodeHex(DigestUtils.md5(mMail.getText().toString()))), new String(Hex.encodeHex(DigestUtils.md5(mPassword.getText().toString()))));
+                }
+            }
+        });
+
+        builder.create();
+        builder.show();
+    }
+
+    private void NewAccount(boolean error, String errorContent)
+    {
+        final Context parent = this;
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(parent);
+        final View mModelNewAccount = getLayoutInflater().inflate(R.layout.model_newaccount, null);
+
+        final TextView mName = (TextView)mModelNewAccount.findViewById(R.id.model_newaccount_name);
+        final TextView mMail = (TextView)mModelNewAccount.findViewById(R.id.model_newaccount_mail);
+        final String password = new String(Hex.encodeHex(DigestUtils.md5(((TextView)mModelNewAccount.findViewById(R.id.model_newaccount_mail)).getText().toString())));
+
+        if(error)
+        {
+            TextView mError = (TextView)mModelNewAccount.findViewById(R.id.model_newaccount_error);
+            mError.setVisibility(View.VISIBLE);
+            mError.setText(errorContent);
+            //((EditText) mModelLogin.findViewById(R.id.model_login_mail)).setError(errorContent);
+        }
+        
+        if(!((TextView)mModelNewAccount.findViewById(R.id.model_newaccount_password)).getText().toString().equals(((TextView)mModelNewAccount.findViewById(R.id.model_newaccount_password2)).getText().toString()))
+        {
+            NewAccount(true, "Les mots de passe ne correspondent pas !");
+        }
+
+        builder.setView(mModelNewAccount);
+        builder.setCancelable(true);
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener()
+        {
+            @Override
+            public void onCancel(DialogInterface dialog)
+            {
+                Login(false, null);
+            }
+        });
+        builder.setNeutralButton(getString(R.string.refuse), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialoginterface, int i)
+            {
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(0);
+            }
+        });
+
+        builder.setPositiveButton(getString(R.string.valid), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialoginterface, int i)
+            {
+                final AsyncTask<Object, Void, Object[]> NewUserTask = new AsyncTask<Object, Void, Object[]>()
+                {
+                    @Override
+                    protected Object[] doInBackground(Object... params)
+                    {
+                        try
+                        {
+                            String mPublicKey = new String(Hex.encodeHex((mKP.getPublic().getEncoded())));
+                            String mPrivateKey = new String(Hex.encodeHex(mKP.getPrivate().getEncoded()));
+                            
+                            Object[] mRTS = new Object[10];
+                            String rts = "", c;
+                            URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id="+ params[0].toString() + "&name=" + params[1].toString() + "&description=" + "description" + "&public_key=" + mPublicKey + "&put=true");
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
+
+                            while ((c = reader.readLine()) != null)
+                                rts += c;
+                            mRTS[0] = rts;          //response
+                            mRTS[1] = params[0];    //owner
+                            mRTS[2] = params[1];    //name
+                            mRTS[3] = params[2];
+                            return mRTS;
+                        }
+                        catch(UnknownHostException e)
+                        {
+                            NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
+                            if(netInfo == null || !netInfo.isConnectedOrConnecting())
+                                cancel(true);
+                            return null;
+                        }
+                        catch (Exception e)
+                        {
+                            cancel(true);
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected void onCancelled()
+                    {
+                    }
+
+                    @Override
+                    protected void onPostExecute(Object[] input)
+                    {
+                        try
+                        {
+                            JSONObject registerValue = new JSONObject(input[0].toString());
+                            if (registerValue.getInt("response") == 1)
+                            {
+                                Toast.makeText(parent, input.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                NewUserTask.execute(new String(Hex.encodeHex(DigestUtils.md5(mMail.getText().toString()))), mName.getText().toString(), password);
+            }
+        });
+
+        builder.create();
+        builder.show();
     }
 
     public static void LoadGravatar(final Context context, final ImageView imageView, String id, final boolean isPhotoBW)
@@ -491,6 +800,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
             NetworkInfo networkinfo = mConnectivityManager.getActiveNetworkInfo();
             if(networkinfo != null && networkinfo.isConnectedOrConnecting())
             {
+                Initialize.ActivityForeground = true;
                 startActivityForResult(intent, i);
                 return true;
             }
@@ -542,54 +852,76 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
     {
         super.onStart();
         InitUser();
+        startService(Initialize.MessageWorkerService);
+    }
+    
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Initialize.ActivityForeground = true;
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        Initialize.ActivityForeground = false;
     }
     
     @Override
     public void onDestroy()
     {
         super.onDestroy();
-        //Toast.makeText(getApplicationContext(), "onStop()", Toast.LENGTH_LONG).show();
+        stopService(Initialize.MessageWorkerService);
     }
     
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        switch(data.getExtras().getInt("result"))
+        try
         {
-            case 0:
-                if(data.getExtras().getBoolean("callback"))
-                {
-                    EnumContact enumcontact = (EnumContact)data.getExtras().getSerializable("contact");
-                    mDBSecureTalk.NewElement(enumcontact.ID, enumcontact.Name, enumcontact.Description, enumcontact.PublicKey);
-                }
-                break;
+            switch (data.getExtras().getInt("result"))
+            {
+                case 0:
+                    if (data.getExtras().getBoolean("callback"))
+                    {
+                        EnumContact enumcontact = (EnumContact) data.getExtras().getSerializable("contact");
+                        mDBSecureTalk.NewElement(enumcontact.ID, enumcontact.Name, enumcontact.Description, enumcontact.PublicKey);
+                    }
+                    break;
 
-            case 1:
-                try
-                {
-                    overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                break;
+                case 1:
+                    try
+                    {
+                        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                    break;
 
-            case 2:
-                recreate();
-                break;
+                case 2:
+                    recreate();
+                    break;
 
-            case 3:
-                String error_content = data.getExtras().getString("error_content");
-                Toast.makeText(getApplicationContext(), error_content, Toast.LENGTH_LONG).show();
-                break;
+                case 3:
+                    String error_content = data.getExtras().getString("error_content");
+                    Toast.makeText(getApplicationContext(), error_content, Toast.LENGTH_LONG).show();
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
+
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, PlaceholderFragment.newInstance(1))
+                    .commit();
         }
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(1))
-                .commit();
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -597,7 +929,8 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
     public static class PrefsFragment extends PreferenceFragment
     {
         @Override
-        public void onCreate(Bundle savedInstanceState) {
+        public void onCreate(Bundle savedInstanceState)
+        {
             super.onCreate(savedInstanceState);
 
             // Load the preferences from an XML resource

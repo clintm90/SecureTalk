@@ -29,6 +29,8 @@ import com.google.android.gms.ads.AdView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
+
 public class NavigationDrawerFragment extends Fragment
 {
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
@@ -45,6 +47,9 @@ public class NavigationDrawerFragment extends Fragment
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+    private TextView mName;
+    
+    private List<EnumNavigationDrawer> NAVIGATIONDRAWERLIST = new ArrayList<EnumNavigationDrawer>();
 
     public NavigationDrawerFragment()
     {
@@ -74,16 +79,35 @@ public class NavigationDrawerFragment extends Fragment
         setHasOptionsMenu(true);
     }
 
+    public void onEventMainThread(String input)
+    {
+        List<String> mSenders = new ArrayList<String>();
+        try
+        {
+            for (String current : input.split(","))
+            {
+                mSenders.add(current);
+            }
+            Populate(mSenders);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState)
     {
+        EventBus.getDefault().register(this);
+        
         final SharedPreferences mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         
         View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView = (ListView) rootView.findViewById(R.id.fragment_navigation_drawer_list);
         ImageView mPhoto = (ImageView) rootView.findViewById(R.id.fragment_navigation_drawer_photo);
         TextView mVersion = (TextView) rootView.findViewById(R.id.fragment_navigation_drawer_about);
-        TextView mName = (TextView) rootView.findViewById(R.id.fragment_navigation_drawer_name);
+        mName = (TextView) rootView.findViewById(R.id.fragment_navigation_drawer_name);
         AdView mAdView = (AdView) rootView.findViewById(R.id.fragment_navigation_drawer_adview);
 
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -114,18 +138,9 @@ public class NavigationDrawerFragment extends Fragment
             e.printStackTrace();
         }
 
-        List<EnumNavigationDrawer> NAVIGATIONDRAWERLIST = new ArrayList<EnumNavigationDrawer>();
-
         mDrawerListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        NavigationDrawerAdapter mNavigationDrawerAdapter = new NavigationDrawerAdapter(this.getActivity(), NAVIGATIONDRAWERLIST);
-
-        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Accueil", getResources().getDrawable(R.drawable.ic_action_home)));
-        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Inviter des contacts", getResources().getDrawable(R.drawable.ic_action_user2b)));
-        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Faire un don", getResources().getDrawable(R.drawable.ic_action_likeb)));
-        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "Options", getResources().getDrawable(R.drawable.ic_action_parametersb)));
-        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), "A Propos...", getResources().getDrawable(R.drawable.ic_action_infob)));
-
-        mDrawerListView.setAdapter(mNavigationDrawerAdapter);
+        
+        Populate(new ArrayList<String>());
 
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -138,6 +153,31 @@ public class NavigationDrawerFragment extends Fragment
 
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return rootView;
+    }
+
+    private void Populate(List<String> senders)
+    {
+        NavigationDrawerAdapter mNavigationDrawerAdapter = new NavigationDrawerAdapter(this.getActivity(), NAVIGATIONDRAWERLIST);
+
+        mNavigationDrawerAdapter.clear();
+
+        String star = "";
+        if (senders.size() > 0)
+        {
+            star = "<b>" + getString(R.string.home) + "</b>&nbsp;<font color=\"red\">*</font>";
+        }
+        else
+        {
+            star = getString(R.string.home);
+        }
+        
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), star, getResources().getDrawable(R.drawable.ic_action_home)));
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), getString(R.string.invite), getResources().getDrawable(R.drawable.ic_action_user2b)));
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), getString(R.string.donation), getResources().getDrawable(R.drawable.ic_action_likeb)));
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), getString(R.string.action_settings), getResources().getDrawable(R.drawable.ic_action_parametersb)));
+        mNavigationDrawerAdapter.add(new EnumNavigationDrawer(this.getActivity(), getString(R.string.about2), getResources().getDrawable(R.drawable.ic_action_infob)));
+
+        mDrawerListView.setAdapter(mNavigationDrawerAdapter);
     }
 
     public boolean isDrawerOpen()

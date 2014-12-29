@@ -1,10 +1,17 @@
 package com.trackcell.securetalk;
 
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
@@ -12,10 +19,14 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import org.apache.commons.collections4.map.DefaultedMap;
+
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,6 +38,10 @@ public class MessageWorker extends Service
     private NotificationManager mNotificationManager;
     private SharedPreferences mPrefsGlobal;
     private Timer mTimer;
+    private MediaPlayer mPlayer;
+    private Uri mSoundUri;
+
+    Map<String,Boolean> mAssignUser =  new DefaultedMap<String,Boolean>(false);
 
     public MessageWorker()
     {
@@ -44,6 +59,8 @@ public class MessageWorker extends Service
         mNotificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+        mSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        
         mTimer = new Timer();
         mTimer.scheduleAtFixedRate(new MainLoop(), Initialize.InitTime, Initialize.ServiceRefreshTime);
 
@@ -54,8 +71,80 @@ public class MessageWorker extends Service
     {
         @Override
         public void handleMessage(Message msg)
+        {    
+            for (String current : msg.obj.toString().split(","))
+            {
+                if (!mAssignUser.get(current))
+                {
+                    if(!Initialize.ActivityForeground)
+                    {
+                        CallNotification(true, current);
+                    }
+                    else
+                    {
+                        EventBus.getDefault().post(msg.obj);
+                        Ringtone mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mSoundUri);
+                        mRingtone.play();
+                    }
+                    mAssignUser.put(current, true);
+                }
+            }
+            
+            /*if(Initialize.ActivityForeground)
+            {
+                try
+                {
+                    if(msg.obj.toString().length() > 0)
+                    {
+                        EventBus.getDefault().post(msg.obj);
+                        Ringtone mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mSoundUri);
+                        mRingtone.play();
+                    }
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            else
+            {
+                if(Initialize.NewMessage)
+                {
+                    final Intent mLaunchNotifiactionIntent = new Intent(getApplicationContext(), Landing.class);
+                    final PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, mLaunchNotifiactionIntent, PendingIntent.FLAG_ONE_SHOT);
+
+                    Notification.Builder mNotification = new Notification.Builder(getApplicationContext());
+                    mNotification.setSmallIcon(R.drawable.ic_stat_message);
+                    mNotification.setContentTitle(getString(R.string.securetalkmessage));
+                    mNotification.setContentText(getString(R.string.youhavemessage));
+                    mNotification.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+                    mNotification.setSound(mSoundUri);
+                    mNotification.setContentIntent(mPendingIntent);
+                    
+                    mNotificationManager.notify(msg.toString().hashCode(), mNotification.build());
+                    Initialize.NewMessage = false;
+                }
+            }*/
+        }
+
+        private void CallNotification(boolean resume, String message)
         {
-            EventBus.getDefault().post(msg.obj);
+            Intent intent = new Intent(getApplicationContext(), Chat.class);
+            intent.putExtra("contact", message);
+            intent.putExtra("public_key", message);
+            intent.putExtra("recipient", message);
+            
+            final PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+            Notification.Builder mNotification = new Notification.Builder(getApplicationContext());
+            mNotification.setSmallIcon(R.drawable.ic_stat_message);
+            mNotification.setContentTitle(getString(R.string.securetalkmessage));
+            mNotification.setContentText(message);
+            mNotification.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+            mNotification.setSound(mSoundUri);
+            mNotification.setContentIntent(mPendingIntent);
+
+            mNotificationManager.notify(message.hashCode(), mNotification.build());
         }
     };
 
@@ -86,6 +175,10 @@ public class MessageWorker extends Service
                 cancel(true);
                 return null;
             }
+            catch(EOFException e)
+            {
+                return "null,null";
+            }
             catch (Exception e)
             {
                 cancel(true);
@@ -106,7 +199,7 @@ public class MessageWorker extends Service
             {
                 Message msg = Message.obtain();
                 msg.obj = input;
-                ToastHandler.sendMessage(msg);
+                //ToastHandler.sendMessage(msg);
                 
                 /*JSONObject mRoot = new JSONObject(input);
                 JSONObject mItems = mRoot.getJSONObject("result");
@@ -135,6 +228,7 @@ public class MessageWorker extends Service
     @Override
     public void onDestroy()
     {
+        mTimer.cancel();
         Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
     }
 

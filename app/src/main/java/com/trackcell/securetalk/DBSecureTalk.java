@@ -70,7 +70,7 @@ public class DBSecureTalk extends SQLiteOpenHelper
         {
             if (senders.contains(result.getString(1)))
             {
-                mRTS.add(new EnumContact(mContext, result.getInt(0), result.getString(1), result.getString(2), result.getString(3), result.getString(4)).singleLine().newMessage(2));
+                mRTS.add(new EnumContact(mContext, result.getInt(0), result.getString(1), result.getString(2), result.getString(3), result.getString(4)).singleLine().bwPhoto().newMessage(2));
             }
             else
             {

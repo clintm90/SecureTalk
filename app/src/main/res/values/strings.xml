@@ -63,5 +63,21 @@
     <string name="sendfile">Send file</string>
     <string name="photo">photo</string>
     <string name="newmessage">New</string>
+    <string name="invite">Inviter des contacts</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="newaccount">New account</string>
+    <string name="connect">Sign In</string>
+    <string name="shortpassword">Too short password</string>
+    <string name="nomail">Not a mail address</string>
+    <string name="repassword">Retype password</string>
+    <string name="noaccount">Account does not exist</string>
+    <string name="Disconnect">Disconnect</string>
+    <string name="home">Home</string>
+    <string name="donation">Make a donation</string>
+    <string name="about2">About&#8230;</string>
+    <string name="securetalkmessage">SecureTalk message</string>
+    <string name="youhavemessage">You have new message.</string>
+    <string name="timeout">Timeout</string>
 
 </resources>

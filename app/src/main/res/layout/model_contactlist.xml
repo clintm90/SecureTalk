@@ -18,7 +18,7 @@
 
     <TextView
         android:id="@+id/model_contactList_title"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/model_contactList_icon"
         android:textSize="19dp"

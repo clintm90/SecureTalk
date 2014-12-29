@@ -2,10 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.trackcell.securetalk.Profile" >
 
-    <!--<item android:id="@+id/action_new_profile"
-        android:title="Nouveau Profil"
-        android:icon="@drawable/ic_action_user_add"
-        android:onClick="newProfile"
-        android:showAsAction="always" />-->
+    <item android:id="@+id/action_disconnect"
+        android:title="@string/Disconnect"
+        android:onClick="Disconnect"
+        android:showAsAction="always" />
 
 </menu>

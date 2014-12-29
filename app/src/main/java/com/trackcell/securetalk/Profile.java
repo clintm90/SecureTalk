@@ -2,8 +2,10 @@ package com.trackcell.securetalk;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -17,6 +19,8 @@ import java.net.URL;
 public class Profile extends Activity
 {
     private WebView mWebView;
+    private SharedPreferences mPrefsGlobal;
+    private SharedPreferences.Editor mStorageGlobal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -32,6 +36,9 @@ public class Profile extends Activity
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
+        mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        mStorageGlobal = mPrefsGlobal.edit();
+        
         mWebView = (WebView)findViewById(R.id.webView);
         mWebView.setWebViewClient(new WebViewClient());
         mWebView.loadData("<h1>Loading...</h1>", "test/html", "UTF-8");
@@ -85,9 +92,12 @@ public class Profile extends Activity
         jsonRequest.execute();
     }
 
-    public void newProfile(MenuItem item)
+    public void Disconnect(MenuItem item)
     {
-        mWebView.loadUrl("https://gravatar.com/site/signup/");
+        mStorageGlobal.clear();
+        mStorageGlobal.apply();
+        setResult(RESULT_OK, new Intent().putExtra("result", 1));
+        finish();
     }
 
     @Override

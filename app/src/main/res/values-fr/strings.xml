@@ -8,6 +8,8 @@
     <string name="action_menu_more">Plus…</string>
     <string name="action_settings">Paramètres</string>
     <string name="action_valid">Valider</string>
+    <string name="home">Accueil</string>
+    <string name="donation">Faire un don</string>
     <string name="action_menu_joinpart">Joindre un fichier</string>
     <string name="action_menu_send">Envoyer le message</string>
     <string name="action_menu_save">Sauvegarder</string>
@@ -48,6 +50,7 @@
     <string name="title_activity_parameters">Parameters</string>
     <string name="title_activity_about">A Propos&#8230;</string>
     <string name="about">A Propos de SecureTalk&#8230;</string>
+    <string name="about2">A Propos&#8230;</string>
     <string name="about_value">C\'est une application gratuite qui vous permet de vous...</string>
     <string name="nomessage">Il n\'y à pas de message</string>
     <string name="action_example">Exemple</string>
@@ -58,5 +61,19 @@
     <string name="sendphoto">Envoyer une photo</string>
     <string name="sendfile">Partager un fichier</string>
     <string name="photo">photo</string>
+    <string name="invite">Inviter des contacts</string>
+    <string name="login">Connexion à SecureTalk</string>
+    <string name="password">Mot de passe</string>
+    <string name="newaccount">Inscription</string>
+    <string name="connect">Connexion</string>
+    <string name="shortpassword">Mot de passe trop court</string>
+    <string name="nomail">Adresse mail invalide</string>
+    <string name="repassword">Verification</string>
+    <string name="noaccount">Le compte n\'existe pas</string>
+    <string name="Disconnect">Déconnexion</string>
+    <string name="newmessage">Nouveau</string>
+    <string name="securetalkmessage">Message SecureTalk</string>
+    <string name="youhavemessage">Vous avez un message.</string>
+    <string name="timeout">Temps d\'envoi dépassé</string>
 
 </resources>

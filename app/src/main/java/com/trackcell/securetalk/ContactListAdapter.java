@@ -1,6 +1,7 @@
 package com.trackcell.securetalk;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,16 +48,18 @@ public class ContactListAdapter extends ArrayAdapter<EnumContact>
 
         if(values.get(position).isNewMessage)
         {
-            //mContactListTitle.setTypeface(Typeface.DEFAULT_BOLD);
-            mContactListStatus.setVisibility(View.VISIBLE);
+            mContactListTitle.setText(Html.fromHtml(values.get(position).Name + "&nbsp;<b><font color=\"red\">*</font></b>"));
+        }
+        else
+        {
+            mContactListTitle.setText(values.get(position).Name);
         }
 
-        mContactListTitle.setText(values.get(position).Name);
-        mContactListDescription.setText(values.get(position).Description);
+        mContactListDescription.setText(values.get(position).Description, TextView.BufferType.SPANNABLE);
 
         if(values.get(position).isPaddingRight)
         {
-            mContactListTitle.setPadding(0, 7, 5, 0);
+            mContactListTitle.setPadding(0, 7, 40, 0);
             mContactListDescription.setPadding(0, 0, 40, 0);
         }
         else

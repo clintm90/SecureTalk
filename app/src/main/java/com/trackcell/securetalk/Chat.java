@@ -49,6 +49,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -101,6 +103,12 @@ public class Chat extends Activity
         {
             mKeyPairGenerator = null;
         }
+        
+        if(mPrefsGlobal.getString("public_key", "none").equals("none"))
+        {
+            setResult(RESULT_OK, new Intent().putExtra("result", 1));
+            CloseApp();
+        }
 
         mChatListAdapter = new ChatListAdapter(this, CHATLIST);
 
@@ -115,6 +123,10 @@ public class Chat extends Activity
         mNoMessages = (TextView) findViewById(R.id.noMessages);
 
         mChatField.setCursorVisible(false);
+
+        //mMainContent.setAdapter(null);
+        
+        mTimer.scheduleAtFixedRate(MainLoop, Initialize.InitTime, Initialize.ActivityRefreshTime);
 
         mChatField.setOnClickListener(new View.OnClickListener()
         {
@@ -284,6 +296,14 @@ public class Chat extends Activity
                     }
                 };
                 SendTask.execute(mChatField.getText().toString(), mPrefsGlobal.getString("owner", "none"), getIntent().getStringExtra("recipient"));
+                try
+                {
+                    SendTask.get(3000, TimeUnit.MILLISECONDS);
+                }
+                catch(TimeoutException e)
+                {
+                    mChatField.setError(getString(R.string.timeout));
+                }
             }
             catch (Exception e)
             {
@@ -411,19 +431,12 @@ public class Chat extends Activity
                         JSONObject mRoot = new JSONObject(input);
                         JSONObject mItems = mRoot.getJSONObject("result");
 
-                        mChatListAdapter.clear();
+                        //mChatListAdapter.clear();
                         
                         for (i = 0; i < mItems.getJSONArray("item").length(); i++)
                         {
                             JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
-
-                            //TODO: change is_me
-                            boolean is_me = false;
-                            if(currentObject.getString("sender").equals(mPrefsGlobal.getString("owner", "none")))
-                            {
-                                is_me = true;
-                            }
-                            
+                            mNoMessages.setVisibility(View.INVISIBLE);
                             mChatListAdapter.add(new EnumChat(getApplicationContext(), false, false, currentObject.getLong("time") * 1000, null, RSADecrypt(currentObject.getString("content"))));
                         }
 
@@ -465,9 +478,7 @@ public class Chat extends Activity
     public void onStart()
     {
         super.onStart();
-        getApplicationContext().stopService(Initialize.MessageWorkerService);
         Input();
-        mTimer.scheduleAtFixedRate(MainLoop, Initialize.InitTime, Initialize.ActivityRefreshTime);
     }
 
     @Override
@@ -477,12 +488,13 @@ public class Chat extends Activity
         super.onBackPressed();
     }
     
-    @Override
+    /*@Override
     public void onStop()
     {
         super.onStop();
+        setResult(RESULT_OK, new Intent().putExtra("result", 1));
         CloseApp();
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)

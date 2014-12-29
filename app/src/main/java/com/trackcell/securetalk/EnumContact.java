@@ -69,10 +69,6 @@ public class EnumContact implements Serializable
     {
         Number = number;
         isNewMessage = true;
-        if(number > 0)
-        {
-            isPhotoBW = true;
-        }
         return this;
     }
 }

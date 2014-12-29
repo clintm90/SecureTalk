@@ -1,6 +1,7 @@
 package com.trackcell.securetalk;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,8 @@ public class NavigationDrawerAdapter extends ArrayAdapter<EnumNavigationDrawer>
 
         TextView mNavigationDrawerName = (TextView)rowView.findViewById(R.id.model_navigationdrawer_name);
         ImageView mNavigationDrawerPhoto = (ImageView)rowView.findViewById(R.id.model_navigationdrawer_photo);
-        mNavigationDrawerName.setText(values.get(position).Name);
+        
+        mNavigationDrawerName.setText(Html.fromHtml(values.get(position).Name), TextView.BufferType.SPANNABLE);
         mNavigationDrawerPhoto.setImageDrawable(values.get(position).Photo);
 
         return rowView;
