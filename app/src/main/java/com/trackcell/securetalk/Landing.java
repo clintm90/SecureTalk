@@ -23,6 +23,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.telephony.TelephonyManager;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +59,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
     private DBSecureTalk mDBSecureTalk;
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    private DrawerLayout mDrawerLayout;
 
     private ConnectivityManager mConnectivityManager;
     private PhoneNumberUtil mPhoneUtil;
@@ -86,15 +89,15 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         mDBSecureTalk = new DBSecureTalk(getApplicationContext(), "SecureTalk.db", null, 1, null);
         mDBSecureTalk.onCreate(mDBSecureTalk.getWritableDatabase());
 
-        mConnectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        mTelephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+        mTelephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         mPhoneUtil = PhoneNumberUtil.getInstance();
 
         mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mStorageGlobal = mPrefsGlobal.edit();
 
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
         {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         }
@@ -113,17 +116,19 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
 
         setContentView(R.layout.activity_landing);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
-        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
     }
 
     public void InitUser()
     {
         mKP = mKeyPairGenerator.generateKeyPair();
         final Context parent = this;
-        
+
         if (!mPrefsGlobal.getBoolean("initialized", false) && mPrefsGlobal.getString("owner", "none").equals("none") && mPrefsGlobal.getString("password", "none").equals("none") && mPrefsGlobal.getString("private_key", "none").equals("none"))
         {
             Login(false, null);
@@ -143,18 +148,22 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                     try
                     {
                         String rts = "", c;
-                        URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id="+ params[0] + "&password=" + params[1] + "&put=false");
+                        URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id=" + params[0] + "&password=" + params[1] + "&put=false");
                         BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
 
                         while ((c = reader.readLine()) != null)
+                        {
                             rts += c;
+                        }
                         return rts;
                     }
-                    catch(UnknownHostException e)
+                    catch (UnknownHostException e)
                     {
                         NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
-                        if(netInfo == null || !netInfo.isConnectedOrConnecting())
+                        if (netInfo == null || !netInfo.isConnectedOrConnecting())
+                        {
                             cancel(true);
+                        }
                         return null;
                     }
                     catch (Exception e)
@@ -492,19 +501,19 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
     private void Login(boolean error, String errorContent)
     {
         final Account aaccount[] = AccountManager.get(getApplicationContext()).getAccountsByType("com.google");
-        
+
         final Context parent = this;
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         final View mModelLogin = getLayoutInflater().inflate(R.layout.model_login, null);
 
-        final EditText mMail = ((EditText)mModelLogin.findViewById(R.id.model_login_mail));
-        final EditText mPassword = ((EditText)mModelLogin.findViewById(R.id.model_login_password));
-        
+        final EditText mMail = ((EditText) mModelLogin.findViewById(R.id.model_login_mail));
+        final EditText mPassword = ((EditText) mModelLogin.findViewById(R.id.model_login_password));
+
         mMail.setText(aaccount[0].name);
 
-        if(error)
+        if (error)
         {
-            TextView mError = (TextView)mModelLogin.findViewById(R.id.model_login_error);
+            TextView mError = (TextView) mModelLogin.findViewById(R.id.model_login_error);
             mError.setVisibility(View.VISIBLE);
             mError.setText(errorContent);
         }
@@ -525,11 +534,11 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         {
             public void onClick(DialogInterface dialoginterface, int i)
             {
-                if(!mMail.getText().toString().contains("@"))
+                if (!mMail.getText().toString().contains("@"))
                 {
                     Login(true, getString(R.string.nomail));
                 }
-                else if(mPassword.getText().toString().length() < 3)
+                else if (mPassword.getText().toString().length() < 3)
                 {
                     Login(true, getString(R.string.shortpassword));
                 }
@@ -543,18 +552,22 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                             try
                             {
                                 String rts = "", c;
-                                URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id="+ params[0] + "&password=" + params[1] + "&put=false");
+                                URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id=" + params[0] + "&password=" + params[1] + "&put=false");
                                 BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
 
                                 while ((c = reader.readLine()) != null)
+                                {
                                     rts += c;
+                                }
                                 return rts;
                             }
-                            catch(UnknownHostException e)
+                            catch (UnknownHostException e)
                             {
                                 NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
-                                if(netInfo == null || !netInfo.isConnectedOrConnecting())
+                                if (netInfo == null || !netInfo.isConnectedOrConnecting())
+                                {
                                     cancel(true);
+                                }
                                 return null;
                             }
                             catch (Exception e)
@@ -564,12 +577,12 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                                 return null;
                             }
                         }
-                        
+
                         @Override
                         protected void onCancelled()
                         {
                         }
-                        
+
                         @Override
                         protected void onPostExecute(String input)
                         {
@@ -580,7 +593,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                                 {
                                     String mPublicKey = new String(Hex.encodeHex((mKP.getPublic().getEncoded())));
                                     String mPrivateKey = new String(Hex.encodeHex(mKP.getPrivate().getEncoded()));
-                                    
+
                                     mStorageGlobal.putBoolean("initialized", true);
                                     mStorageGlobal.putString("owner", new String(Hex.encodeHex(DigestUtils.md5(mMail.getText().toString()))));
                                     mStorageGlobal.putString("name", registerValue.getString("name"));
@@ -615,25 +628,30 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
     private void NewAccount(boolean error, String errorContent)
     {
         final Context parent = this;
-        
+
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         final View mModelNewAccount = getLayoutInflater().inflate(R.layout.model_newaccount, null);
 
-        final TextView mName = (TextView)mModelNewAccount.findViewById(R.id.model_newaccount_name);
-        final TextView mMail = (TextView)mModelNewAccount.findViewById(R.id.model_newaccount_mail);
-        final String password = new String(Hex.encodeHex(DigestUtils.md5(((TextView)mModelNewAccount.findViewById(R.id.model_newaccount_mail)).getText().toString())));
+        final TextView mName = (TextView) mModelNewAccount.findViewById(R.id.model_newaccount_name);
+        final TextView mMail = (TextView) mModelNewAccount.findViewById(R.id.model_newaccount_mail);
+        final String gravatarID = new String(Hex.encodeHex(DigestUtils.md5(mMail.getText().toString())));
+        final String password = new String(Hex.encodeHex(DigestUtils.md5(((TextView) mModelNewAccount.findViewById(R.id.model_newaccount_mail)).getText().toString())));
 
-        if(error)
+        try
         {
-            TextView mError = (TextView)mModelNewAccount.findViewById(R.id.model_newaccount_error);
+            final Account aaccount[] = AccountManager.get(getApplicationContext()).getAccountsByType("com.google");
+            mMail.setText(aaccount[0].name);
+        }
+        catch(Exception e)
+        {
+        }
+        
+        if (error)
+        {
+            TextView mError = (TextView) mModelNewAccount.findViewById(R.id.model_newaccount_error);
             mError.setVisibility(View.VISIBLE);
             mError.setText(errorContent);
             //((EditText) mModelLogin.findViewById(R.id.model_login_mail)).setError(errorContent);
-        }
-        
-        if(!((TextView)mModelNewAccount.findViewById(R.id.model_newaccount_password)).getText().toString().equals(((TextView)mModelNewAccount.findViewById(R.id.model_newaccount_password2)).getText().toString()))
-        {
-            NewAccount(true, "Les mots de passe ne correspondent pas !");
         }
 
         builder.setView(mModelNewAccount);
@@ -668,25 +686,31 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                         {
                             String mPublicKey = new String(Hex.encodeHex((mKP.getPublic().getEncoded())));
                             String mPrivateKey = new String(Hex.encodeHex(mKP.getPrivate().getEncoded()));
-                            
+
                             Object[] mRTS = new Object[10];
                             String rts = "", c;
-                            URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id="+ params[0].toString() + "&name=" + params[1].toString() + "&description=" + "description" + "&public_key=" + mPublicKey + "&put=true");
+                            URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id=" + params[0].toString() + "&name=" + params[1].toString() + "&description=" + "description" + "&password=" + params[2].toString() + "&public_key=" + mPublicKey + "&put=true");
                             BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
 
                             while ((c = reader.readLine()) != null)
+                            {
                                 rts += c;
+                            }
                             mRTS[0] = rts;          //response
                             mRTS[1] = params[0];    //owner
                             mRTS[2] = params[1];    //name
-                            mRTS[3] = params[2];
+                            mRTS[3] = params[2];    //password
+                            mRTS[4] = mPublicKey;    //publickey
+                            mRTS[5] = mPrivateKey;    //privatekey
                             return mRTS;
                         }
-                        catch(UnknownHostException e)
+                        catch (UnknownHostException e)
                         {
                             NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
-                            if(netInfo == null || !netInfo.isConnectedOrConnecting())
+                            if (netInfo == null || !netInfo.isConnectedOrConnecting())
+                            {
                                 cancel(true);
+                            }
                             return null;
                         }
                         catch (Exception e)
@@ -710,16 +734,42 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                             JSONObject registerValue = new JSONObject(input[0].toString());
                             if (registerValue.getInt("response") == 1)
                             {
-                                Toast.makeText(parent, input.toString(), Toast.LENGTH_LONG).show();
+                                mStorageGlobal.putBoolean("initialized", true);
+                                mStorageGlobal.putString("owner", input[1].toString());
+                                mStorageGlobal.putString("name", input[2].toString());
+                                mStorageGlobal.putString("password", input[3].toString());
+                                mStorageGlobal.putString("public_key", input[4].toString());
+                                mStorageGlobal.putString("private_key", input[5].toString());
+                                mStorageGlobal.apply();
+                                recreate();
+                            }
+                            else
+                            {
+                                NewAccount(true, getString(R.string.userexist));
                             }
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
                             e.printStackTrace();
                         }
                     }
                 };
-                NewUserTask.execute(new String(Hex.encodeHex(DigestUtils.md5(mMail.getText().toString()))), mName.getText().toString(), password);
+                if(!((TextView) mModelNewAccount.findViewById(R.id.model_newaccount_password)).getText().toString().equals(((TextView) mModelNewAccount.findViewById(R.id.model_newaccount_password2)).getText().toString()))
+                {
+                    NewAccount(true, getString(R.string.notseempassword));
+                }
+                if(!((TextView) mModelNewAccount.findViewById(R.id.model_newaccount_mail)).getText().toString().contains("@"))
+                {
+                    NewAccount(true, getString(R.string.nomail));
+                }
+                else if(((TextView) mModelNewAccount.findViewById(R.id.model_newaccount_password)).getText().toString().length() < 3)
+                {
+                    NewAccount(true, getString(R.string.shortpassword));
+                }
+                else
+                {
+                    NewUserTask.execute(gravatarID, mName.getText().toString(), password);
+                }
             }
         });
 
@@ -738,15 +788,15 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
 
                 try
                 {
-                    httpURLConnection = (HttpURLConnection)(new URL("http://www.gravatar.com/avatar/" + params[0] + "?s=80&d=404")).openConnection();
+                    httpURLConnection = (HttpURLConnection) (new URL("http://www.gravatar.com/avatar/" + params[0] + "?s=80&d=404")).openConnection();
                     return BitmapFactory.decodeStream(httpURLConnection.getInputStream(), null, new BitmapFactory.Options());
                 }
-                catch(UnknownHostException e)
+                catch (UnknownHostException e)
                 {
                     cancel(true);
                     return null;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     cancel(true);
                     e.printStackTrace();
@@ -779,7 +829,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
 
     public static void BWImageView(boolean execute, ImageView imageView, float level)
     {
-        if(execute)
+        if (execute)
         {
             imageView.setColorFilter(new ColorMatrixColorFilter(new float[]
                     {
@@ -795,10 +845,10 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
 
     public boolean AutorizeActivityLaunch(Intent intent, int i)
     {
-        if(!mPrefsGlobal.getString("owner", "none").equals("none"))
+        if (!mPrefsGlobal.getString("owner", "none").equals("none"))
         {
             NetworkInfo networkinfo = mConnectivityManager.getActiveNetworkInfo();
-            if(networkinfo != null && networkinfo.isConnectedOrConnecting())
+            if (networkinfo != null && networkinfo.isConnectedOrConnecting())
             {
                 Initialize.ActivityForeground = true;
                 startActivityForResult(intent, i);
@@ -841,12 +891,6 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         AutorizeActivityLaunch(new Intent(this, Search.class), 1);
     }
 
-    public void InitFirstLaunch(View view)
-    {
-        mStorageGlobal.putString("first_launch", "ok");
-        mStorageGlobal.apply();
-    }
-
     @Override
     public void onStart()
     {
@@ -854,7 +898,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         InitUser();
         startService(Initialize.MessageWorkerService);
     }
-    
+
     @Override
     protected void onResume()
     {
@@ -868,14 +912,14 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         super.onPause();
         Initialize.ActivityForeground = false;
     }
-    
+
     @Override
     public void onDestroy()
     {
         super.onDestroy();
         stopService(Initialize.MessageWorkerService);
     }
-    
+
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         try
@@ -918,7 +962,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                     .replace(R.id.container, PlaceholderFragment.newInstance(1))
                     .commit();
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -969,6 +1013,24 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent e)
+    {
+        if (keyCode == KeyEvent.KEYCODE_MENU)
+        {
+            if(!mDrawerLayout.isDrawerOpen(Gravity.LEFT))
+            {
+                mDrawerLayout.openDrawer(Gravity.LEFT);
+            }
+            else
+            {
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, e);
     }
 
     @Override

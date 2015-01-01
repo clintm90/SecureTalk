@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Html;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -123,6 +124,8 @@ public class Chat extends Activity
         mNoMessages = (TextView) findViewById(R.id.noMessages);
 
         mChatField.setCursorVisible(false);
+        //mChatField.setText(new String(Character.toChars(0x1F601)));
+        mChatField.setText(Html.fromHtml("Salut &#9786; &#8252; &#128515; &#x1f608; &#10084; &#128527;"), TextView.BufferType.SPANNABLE);
 
         //mMainContent.setAdapter(null);
         
@@ -245,6 +248,11 @@ public class Chat extends Activity
                                 cancel(true);
                                 return null;
                             }
+                            catch(ArrayIndexOutOfBoundsException e)
+                            {
+                                cancel(true);
+                                return null;
+                            }
                             catch (Exception e)
                             {
                                 cancel(true);
@@ -302,7 +310,8 @@ public class Chat extends Activity
                 }
                 catch(TimeoutException e)
                 {
-                    mChatField.setError(getString(R.string.timeout));
+                    SendTask.cancel(true);
+                    //mChatField.setError(getString(R.string.timeout));
                 }
             }
             catch (Exception e)
@@ -485,7 +494,8 @@ public class Chat extends Activity
     public void onBackPressed()
     {
         setResult(RESULT_OK, new Intent().putExtra("result", 1));
-        super.onBackPressed();
+        super.onDestroy();
+        //super.onBackPressed();
     }
     
     /*@Override

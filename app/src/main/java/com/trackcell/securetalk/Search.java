@@ -52,6 +52,7 @@ public class Search extends Activity
     private EnumContact mRTS;
     private SharedPreferences mPrefsGlobal;
     private SharedPreferences.Editor mStorageGlobal;
+    private boolean mCancel = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -199,7 +200,16 @@ public class Search extends Activity
         if(!query.trim().equals("") && query.length() >= 1)
         {
             SearchTask.execute(query);
-        }
+            /*try
+            {
+                SearchTask.get(500, TimeUnit.MILLISECONDS);
+            }
+            catch(Exception e)
+            {
+                mCancel = true;
+                SearchTask.cancel(true);
+            }*/
+        }   
         else
         {
             mSearchField.setError(getResources().getString(R.string.typemore));

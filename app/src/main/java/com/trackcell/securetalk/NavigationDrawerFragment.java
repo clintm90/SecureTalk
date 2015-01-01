@@ -69,7 +69,7 @@ public class NavigationDrawerFragment extends Fragment
             mFromSavedInstanceState = true;
         }
 
-        SwitchToFragmentByNumber(mCurrentSelectedPosition);
+        SwitchToFragmentByNumber(mCurrentSelectedPosition, null);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class NavigationDrawerFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                SwitchToFragmentByNumber(position);
+                SwitchToFragmentByNumber(position, (EnumNavigationDrawer)view.getTag());
             }
         });
 
@@ -254,9 +254,21 @@ public class NavigationDrawerFragment extends Fragment
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    private void SwitchToFragmentByNumber(int position)
+    private void SwitchToFragmentByNumber(int position, EnumNavigationDrawer enumNavigationDrawer)
     {
         mCurrentSelectedPosition = position;
+
+        switch(position)
+        {
+            case 0:
+                getActionBar().setTitle(getString(R.string.app_name));
+                break;
+            
+            default:
+                getActionBar().setTitle(enumNavigationDrawer.Name);
+                break;
+        }
+        
         if (mDrawerListView != null)
         {
             mDrawerListView.setItemChecked(position, true);
