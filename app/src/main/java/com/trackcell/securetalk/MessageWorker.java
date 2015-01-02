@@ -18,16 +18,20 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.map.DefaultedMap;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import de.greenrobot.event.EventBus;
 
 public class MessageWorker extends Service
 {
@@ -37,8 +41,8 @@ public class MessageWorker extends Service
     private Timer mTimer;
     private MediaPlayer mPlayer;
     private Uri mSoundUri;
-
-    Map<String,Boolean> mAssignUser =  new DefaultedMap<String,Boolean>(false);
+    
+    private DefaultedMap<String,Boolean> MessageList = new DefaultedMap<String,Boolean>(false);
 
     public MessageWorker()
     {
@@ -69,7 +73,26 @@ public class MessageWorker extends Service
         @Override
         public void handleMessage(Message msg)
         {
-            Toast.makeText(getApplicationContext(), msg.obj.toString(), Toast.LENGTH_LONG).show();
+            try
+            {
+                JSONObject mRoot = new JSONObject(msg.obj.toString());
+                JSONObject mItems = mRoot.getJSONObject("result");
+                for (int i = 0; i < mItems.getJSONArray("item").length(); i++)
+                {
+                    JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
+                    String Hash = new String(Hex.encodeHex(DigestUtils.md5(currentObject.get("sender").toString().concat("_").concat(currentObject.get("content").toString()))));
+                    if(!MessageList.get(Hash))
+                    {
+                        EventBus.getDefault().post(msg.obj.toString());
+                        CallNotification(currentObject.get("sender").toString());
+                        MessageList.put(Hash, true);
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
             /*for (String current : msg.obj.toString().split(","))
             {
                 if (!mAssignUser.get(current))
@@ -125,7 +148,7 @@ public class MessageWorker extends Service
             }*/
         }
 
-        private void CallNotification(boolean resume, String message)
+        private void CallNotification(String message)
         {
             Intent intent = new Intent(getApplicationContext(), Chat.class);
             intent.putExtra("contact", message);
@@ -160,7 +183,7 @@ public class MessageWorker extends Service
             try
             {
                 String rts = "", c;
-                URL mURL = new URL(Initialize.SecureTalkServer + "getMessageByID.php?sender=%&recipient=" + params[0]);
+                URL mURL = new URL(Initialize.SecureTalkServer + "getMessageByID.php?sender=%25&recipient=" + params[0]);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
                 while ((c = reader.readLine()) != null)
                 {
@@ -198,13 +221,6 @@ public class MessageWorker extends Service
                 Message msg = Message.obtain();
                 msg.obj = input;
                 ToastHandler.sendMessage(msg);
-                
-                /*JSONObject mRoot = new JSONObject(input);
-                JSONObject mItems = mRoot.getJSONObject("result");
-                for (i = 0; i < mItems.getJSONArray("item").length(); i++)
-                {
-                    JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
-                }*/
             }
             catch (Exception e)
             {

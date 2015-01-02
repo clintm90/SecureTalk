@@ -501,7 +501,7 @@ public class Chat extends Activity
     {
         setResult(RESULT_OK, new Intent().putExtra("result", 1));
         super.onDestroy();
-        //super.onBackPressed();
+        super.onBackPressed();
     }
     
     /*@Override

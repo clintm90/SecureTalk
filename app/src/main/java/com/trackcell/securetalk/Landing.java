@@ -113,7 +113,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         {
             mKeyPairGenerator = null;
         }
-        
+
         setContentView(R.layout.activity_landing);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -123,7 +123,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
 
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
     }
-    
+
     public void test()
     {
         Toast.makeText(getApplicationContext(), "salut", Toast.LENGTH_LONG).show();
@@ -205,11 +205,11 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
             };
             LoginTask.execute(mPrefsGlobal.getString("owner", "none"), mPrefsGlobal.getString("password", "none"));
         }
-        
+
         /*//TODO: implement register timeout
         mKP = mKeyPairGenerator.generateKeyPair();
         final Context parent = this;
-        
+
         final ProgressDialog alertDialog = ProgressDialog.show(this, "", getString(R.string.register));
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         alertDialog.setCancelable(false);
@@ -256,12 +256,12 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                         return null;
                     }
                 }
-                
+
                 @Override
                 protected void onCancelled()
                 {
                 }
-                
+
                 @Override
                 protected void onPostExecute(Object[] input)
                 {
@@ -279,7 +279,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                     }
                 }
             };
-            
+
             final AsyncTask<String, Void, String> UpdatePublicKeyTask = new AsyncTask<String, Void, String>()
             {
                 @Override
@@ -309,12 +309,12 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                         return null;
                     }
                 }
-                
+
                 @Override
                 protected void onCancelled()
                 {
                 }
-                
+
                 @Override
                 protected void onPostExecute(String input)
                 {
@@ -332,7 +332,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                     }
                 }
             };
-            
+
             AsyncTask<Object, Void, Object[]> InitUserTask = new AsyncTask<Object, Void, Object[]>()
             {
                 @Override
@@ -466,7 +466,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                     builder.show();
                 }
             };
-            
+
             if (mPrefsGlobal.getBoolean("initialized", false) && !mPrefsGlobal.getString("owner", "none").equals("none") && !mPrefsGlobal.getString("password", "none").equals("none") && !mPrefsGlobal.getString("private_key", "none").equals("none"))
             {
                 InitUserTask.execute(true, mPrefsGlobal.getString("owner", "none"), mPrefsGlobal.getString("password", "none"), mKP);
@@ -650,7 +650,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         catch(Exception e)
         {
         }
-        
+
         if (error)
         {
             TextView mError = (TextView) mModelNewAccount.findViewById(R.id.model_newaccount_error);
@@ -901,7 +901,6 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
     {
         super.onStart();
         InitUser();
-        startService(Initialize.MessageWorkerService);
     }
 
     @Override

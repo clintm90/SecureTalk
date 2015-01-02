@@ -81,7 +81,7 @@ public class NavigationDrawerFragment extends Fragment
 
     public void onEventMainThread(String input)
     {
-        List<String> mSenders = new ArrayList<String>();
+        /*List<String> mSenders = new ArrayList<String>();
         try
         {
             for (String current : input.split(","))
@@ -93,7 +93,7 @@ public class NavigationDrawerFragment extends Fragment
         catch (Exception e)
         {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Override

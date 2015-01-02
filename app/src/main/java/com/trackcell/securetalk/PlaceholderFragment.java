@@ -58,7 +58,7 @@ public class PlaceholderFragment extends Fragment
     
     public void onEventMainThread(String input)
     {
-        if(getArguments().getInt(ARG_SECTION_NUMBER) == 1)
+        /*if(getArguments().getInt(ARG_SECTION_NUMBER) == 1)
         {
             final DBSecureTalk mDBSecureTalk = new DBSecureTalk(getActivity().getApplicationContext(), "SecureTalk.db", null, 1, null);
             List<String> mSenders = new ArrayList<String>();
@@ -74,7 +74,7 @@ public class PlaceholderFragment extends Fragment
             {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     @Override
