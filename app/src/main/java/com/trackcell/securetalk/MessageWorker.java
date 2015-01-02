@@ -31,8 +31,6 @@ import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.greenrobot.event.EventBus;
-
 public class MessageWorker extends Service
 {
     private Handler mHandler;
@@ -83,7 +81,7 @@ public class MessageWorker extends Service
                     String Hash = new String(Hex.encodeHex(DigestUtils.md5(currentObject.get("sender").toString().concat("_").concat(currentObject.get("content").toString()))));
                     if(!MessageList.get(Hash))
                     {
-                        EventBus.getDefault().post(msg.obj.toString());
+                        //EventBus.getDefault().post(msg.obj.toString());
                         CallNotification(currentObject.get("sender").toString());
                         MessageList.put(Hash, true);
                     }
@@ -93,59 +91,6 @@ public class MessageWorker extends Service
             {
                 e.printStackTrace();
             }
-            /*for (String current : msg.obj.toString().split(","))
-            {
-                if (!mAssignUser.get(current))
-                {
-                    if(!Initialize.ActivityForeground)
-                    {
-                        CallNotification(true, current);
-                    }
-                    else
-                    {
-                        EventBus.getDefault().post(msg.obj);
-                        Ringtone mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mSoundUri);
-                        mRingtone.play();
-                    }
-                    mAssignUser.put(current, true);
-                }
-            }
-            
-            /*if(Initialize.ActivityForeground)
-            {
-                try
-                {
-                    if(msg.obj.toString().length() > 0)
-                    {
-                        EventBus.getDefault().post(msg.obj);
-                        Ringtone mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mSoundUri);
-                        mRingtone.play();
-                    }
-                }
-                catch(Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-            else
-            {
-                if(Initialize.NewMessage)
-                {
-                    final Intent mLaunchNotifiactionIntent = new Intent(getApplicationContext(), Landing.class);
-                    final PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, mLaunchNotifiactionIntent, PendingIntent.FLAG_ONE_SHOT);
-
-                    Notification.Builder mNotification = new Notification.Builder(getApplicationContext());
-                    mNotification.setSmallIcon(R.drawable.ic_stat_message);
-                    mNotification.setContentTitle(getString(R.string.securetalkmessage));
-                    mNotification.setContentText(getString(R.string.youhavemessage));
-                    mNotification.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-                    mNotification.setSound(mSoundUri);
-                    mNotification.setContentIntent(mPendingIntent);
-                    
-                    mNotificationManager.notify(msg.toString().hashCode(), mNotification.build());
-                    Initialize.NewMessage = false;
-                }
-            }*/
         }
 
         private void CallNotification(String message)
@@ -160,7 +105,7 @@ public class MessageWorker extends Service
             Notification.Builder mNotification = new Notification.Builder(getApplicationContext());
             mNotification.setSmallIcon(R.drawable.ic_stat_message);
             mNotification.setContentTitle(getString(R.string.securetalkmessage));
-            mNotification.setContentText(message);
+            mNotification.setContentText(getString(R.string.newmesage));
             mNotification.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
             mNotification.setSound(mSoundUri);
             mNotification.setContentIntent(mPendingIntent);
