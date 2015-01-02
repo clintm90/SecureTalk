@@ -27,6 +27,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.github.liveflow.AsyncWorker;
+
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.json.JSONObject;
@@ -113,15 +115,15 @@ public class Chat extends Activity
 
         mChatListAdapter = new ChatListAdapter(this, CHATLIST);
 
-        setContentView(R.layout.activity_chat);
+        setContentView(com.trackcell.securetalk.R.layout.activity_chat);
 
-        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        overridePendingTransition(com.trackcell.securetalk.R.anim.trans_left_in, com.trackcell.securetalk.R.anim.trans_left_out);
 
         this.setTitle(getIntent().getStringExtra("contact"));
 
-        mMainContent = (ListView) findViewById(R.id.mainContentChat);
-        mChatField = (EditText) findViewById(R.id.chatField);
-        mNoMessages = (TextView) findViewById(R.id.noMessages);
+        mMainContent = (ListView) findViewById(com.trackcell.securetalk.R.id.mainContentChat);
+        mChatField = (EditText) findViewById(com.trackcell.securetalk.R.id.chatField);
+        mNoMessages = (TextView) findViewById(com.trackcell.securetalk.R.id.noMessages);
 
         mChatField.setCursorVisible(false);
         //mChatField.setText(new String(Character.toChars(0x1F601)));
@@ -266,7 +268,7 @@ public class Chat extends Activity
                     protected void onPreExecute()
                     {
                         mChatField.setText("");
-                        mChatField.setHint(R.string.sending);
+                        mChatField.setHint(com.trackcell.securetalk.R.string.sending);
                     }
 
                     @Override
@@ -275,14 +277,14 @@ public class Chat extends Activity
                         NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
                         if (netInfo == null || !netInfo.isConnectedOrConnecting())
                         {
-                            setResult(RESULT_OK, new Intent().putExtra("result", 3).putExtra("error_content", getResources().getString(R.string.noconnection)));
+                            setResult(RESULT_OK, new Intent().putExtra("result", 3).putExtra("error_content", getResources().getString(com.trackcell.securetalk.R.string.noconnection)));
                             CloseApp();
                         }
                         else
                         {
-                            mChatField.setError(getString(R.string.nosend));
+                            mChatField.setError(getString(com.trackcell.securetalk.R.string.nosend));
                         }
-                        mChatField.setHint(R.string.entermessage);
+                        mChatField.setHint(com.trackcell.securetalk.R.string.entermessage);
                     }
 
                     @Override
@@ -300,7 +302,7 @@ public class Chat extends Activity
                             CloseApp();
                         }
 
-                        mChatField.setHint(R.string.entermessage);
+                        mChatField.setHint(com.trackcell.securetalk.R.string.entermessage);
                     }
                 };
                 SendTask.execute(mChatField.getText().toString(), mPrefsGlobal.getString("owner", "none"), getIntent().getStringExtra("recipient"));
@@ -327,7 +329,7 @@ public class Chat extends Activity
         }
         else
         {
-            mChatField.setError(getResources().getString(R.string.typemore));
+            mChatField.setError(getResources().getString(com.trackcell.securetalk.R.string.typemore));
         }
     }
 
@@ -351,31 +353,35 @@ public class Chat extends Activity
         return new String(decryptedBytes, "UTF-8");
     }
 
-    public void SendPhoto(Bitmap bitmap)
+    public void SendPhoto(final Bitmap bitmap)
     {
-        AsyncTask<Bitmap, Void, Object[]> SendPhotoTask = new AsyncTask<Bitmap, Void, Object[]>()
+        AsyncWorker<Bitmap, Object[], Void> SendPhotoTask = new AsyncWorker<Bitmap, Object[], Void>()
         {
             @Override
-            protected Object[] doInBackground(Bitmap... params)
+            protected Object[] onStart(Bitmap... bitmaps)
             {
                 Object[] mRTS = new Object[2];
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                params[0].compress(Bitmap.CompressFormat.JPEG, 10, baos);
+                bitmaps[0].compress(Bitmap.CompressFormat.JPEG, 10, baos);
                 byte[] b = baos.toByteArray();
-                mRTS[0] = params[0];
+                mRTS[0] = bitmaps[0];
                 mRTS[1] = Base64.encodeToString(b, Base64.DEFAULT);
                 return mRTS;
             }
 
             @Override
-            protected void onPostExecute(Object[] input)
+            protected void onEnd(Object[] objects)
             {
-                //Todo: adding method to send photo
-                mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, 1418342400000L, "salut", "Ok d'accord").putPhoto((Bitmap) input[0]));
+                mChatListAdapter.add(new EnumChat(getApplicationContext(), true, false, 1418342400000L, "salut", "Ok d'accord").putPhoto((Bitmap) objects[0]));
                 mMainContent.setAdapter(mChatListAdapter);
             }
+
+            @Override
+            protected void onCancel(Void... cancel)
+            {
+            }
         };
-        SendPhotoTask.execute(bitmap);
+        SendPhotoTask.Run(bitmap);
     }
     
     private class GetMessageByID extends AsyncTask<String, Void, String>
@@ -418,12 +424,12 @@ public class Chat extends Activity
             NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
             if (netInfo == null || !netInfo.isConnectedOrConnecting())
             {
-                setResult(RESULT_OK, new Intent().putExtra("result", 3).putExtra("error_content", getResources().getString(R.string.noconnection)));
+                setResult(RESULT_OK, new Intent().putExtra("result", 3).putExtra("error_content", getResources().getString(com.trackcell.securetalk.R.string.noconnection)));
                 CloseApp();
             }
             else
             {
-                mChatField.setError(getString(R.string.nosend));
+                mChatField.setError(getString(com.trackcell.securetalk.R.string.nosend));
             }
         }
         
@@ -526,7 +532,7 @@ public class Chat extends Activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        getMenuInflater().inflate(R.menu.chat, menu);
+        getMenuInflater().inflate(com.trackcell.securetalk.R.menu.chat, menu);
         return true;
     }
 
@@ -542,7 +548,7 @@ public class Chat extends Activity
                 CloseApp();
                 return true;
 
-            case R.id.action_settings:
+            case com.trackcell.securetalk.R.id.action_settings:
                 return true;
         }
         return super.onOptionsItemSelected(item);

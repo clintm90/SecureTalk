@@ -75,5 +75,6 @@
     <string name="securetalkmessage">Message SecureTalk</string>
     <string name="youhavemessage">Vous avez un message.</string>
     <string name="timeout">Temps d\'envoi dépassé</string>
+    <string name="notseempassword">Not seem password</string>
 
 </resources>

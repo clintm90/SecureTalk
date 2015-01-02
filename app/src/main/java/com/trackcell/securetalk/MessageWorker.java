@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -29,8 +28,6 @@ import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import de.greenrobot.event.EventBus;
 
 public class MessageWorker extends Service
 {
@@ -71,8 +68,9 @@ public class MessageWorker extends Service
     {
         @Override
         public void handleMessage(Message msg)
-        {    
-            for (String current : msg.obj.toString().split(","))
+        {
+            Toast.makeText(getApplicationContext(), msg.obj.toString(), Toast.LENGTH_LONG).show();
+            /*for (String current : msg.obj.toString().split(","))
             {
                 if (!mAssignUser.get(current))
                 {
@@ -162,7 +160,7 @@ public class MessageWorker extends Service
             try
             {
                 String rts = "", c;
-                URL mURL = new URL(Initialize.SecureTalkServer + "getMessageSenderByID.php?recipient=" + params[0]);
+                URL mURL = new URL(Initialize.SecureTalkServer + "getMessageByID.php?sender=%&recipient=" + params[0]);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
                 while ((c = reader.readLine()) != null)
                 {
@@ -199,7 +197,7 @@ public class MessageWorker extends Service
             {
                 Message msg = Message.obtain();
                 msg.obj = input;
-                //ToastHandler.sendMessage(msg);
+                ToastHandler.sendMessage(msg);
                 
                 /*JSONObject mRoot = new JSONObject(input);
                 JSONObject mItems = mRoot.getJSONObject("result");

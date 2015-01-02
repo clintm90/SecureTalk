@@ -79,5 +79,6 @@
     <string name="securetalkmessage">SecureTalk message</string>
     <string name="youhavemessage">You have new message.</string>
     <string name="timeout">Timeout</string>
+    <string name="notseempassword">Not seem password</string>
 
 </resources>

@@ -113,7 +113,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         {
             mKeyPairGenerator = null;
         }
-
+        
         setContentView(R.layout.activity_landing);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -122,6 +122,11 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
+    }
+    
+    public void test()
+    {
+        Toast.makeText(getApplicationContext(), "salut", Toast.LENGTH_LONG).show();
     }
 
     public void InitUser()
