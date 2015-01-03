@@ -77,5 +77,6 @@
     <string name="timeout">Temps d\'envoi dépassé</string>
     <string name="notseempassword">Not seem password</string>
     <string name="newmesageby">Nouveau message de %s</string>
+    <string name="nmsg">%d msg.</string>
 
 </resources>

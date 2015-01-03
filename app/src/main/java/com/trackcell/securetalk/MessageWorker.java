@@ -1,6 +1,5 @@
 package com.trackcell.securetalk;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -9,7 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaPlayer;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,6 +16,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import org.apache.commons.codec.binary.Hex;
@@ -34,13 +34,15 @@ import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.greenrobot.event.EventBus;
+
 public class MessageWorker extends Service
 {
     private Handler mHandler;
     private NotificationManager mNotificationManager;
     private SharedPreferences mPrefsGlobal;
     private Timer mTimer;
-    private MediaPlayer mPlayer;
+    private Ringtone mRingtone;
     private Uri mSoundUri;
     
     private DefaultedMap<String,Boolean> MessageList = new DefaultedMap<String,Boolean>(false);
@@ -62,6 +64,8 @@ public class MessageWorker extends Service
         mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         mSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mSoundUri);
         
         mTimer = new Timer();
         mTimer.scheduleAtFixedRate(new MainLoop(), Initialize.InitTime, Initialize.ServiceRefreshTime);
@@ -86,7 +90,16 @@ public class MessageWorker extends Service
                     {
                         if(!currentObject.get("sender").toString().equals(mPrefsGlobal.getString("owner", "none")))
                         {
-                            CallNotification(Hash, currentObject.toString());
+                            if(Initialize.ActivityForeground)
+                            {
+                                EventBus.getDefault().post(msg.obj.toString());
+                                mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mSoundUri);
+                                mRingtone.play();
+                            }
+                            else
+                            {
+                                CallNotification(Hash, currentObject.toString());
+                            }
                         }
                         MessageList.put(Hash, true);
                     }
@@ -140,7 +153,7 @@ public class MessageWorker extends Service
                         return null;
                     }
                 }
-                
+
                 @Override
                 protected void onPostExecute(Object[] input)
                 {
@@ -157,11 +170,12 @@ public class MessageWorker extends Service
 
                         final PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-                        Notification.Builder mNotification = new Notification.Builder(getApplicationContext());
-                        mNotification.setSmallIcon(R.drawable.ic_stat_message);
+                        NotificationCompat.Builder mNotification = new NotificationCompat.Builder(getApplicationContext());
+                        mNotification.setSmallIcon(R.drawable.ic_stat_notification_sms);
                         mNotification.setContentTitle(name);
                         mNotification.setAutoCancel(true);
                         mNotification.setTicker(String.format(getString(R.string.newmesageby), name));
+                        mNotification.setGroup(getString(R.string.app_name));
                         mNotification.setContentText(getString(R.string.newmesage));
                         mNotification.setLargeIcon((Bitmap) input[0]);
                         mNotification.setSound(mSoundUri);

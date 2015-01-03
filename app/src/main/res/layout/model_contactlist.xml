@@ -18,7 +18,7 @@
 
     <TextView
         android:id="@+id/model_contactList_title"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/model_contactList_icon"
         android:textSize="19dp"
@@ -52,7 +52,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/newmessage"
+        android:text="@string/noset"
         android:id="@+id/model_contactList_status"
         android:layout_alignTop="@+id/model_contactList_icon"
         android:layout_toRightOf="@+id/model_contactList_title"
@@ -64,6 +64,7 @@
         android:textIsSelectable="false"
         android:layout_marginTop="6dp"
         android:padding="3dp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:autoText="false"/>
 
 </RelativeLayout>

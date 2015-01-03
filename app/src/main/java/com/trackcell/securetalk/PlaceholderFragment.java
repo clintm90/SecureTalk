@@ -22,7 +22,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -58,8 +62,37 @@ public class PlaceholderFragment extends Fragment
     
     public void onEventMainThread(String input)
     {
-        /*if(getArguments().getInt(ARG_SECTION_NUMBER) == 1)
+        if(getArguments().getInt(ARG_SECTION_NUMBER) == 1)
         {
+            try
+            {
+                List<String> SenderList = new ArrayList<String>();
+                JSONObject json = new JSONObject(input);
+                JSONArray items = json.getJSONObject("result").getJSONArray("item");
+                
+                for(int i=0; i<items.length(); i++)
+                {
+                    SenderList.add(items.getJSONObject(i).getString("sender"));
+                }
+
+                for (int j = 0; j < mMainContent.getChildCount(); j++)
+                {
+                    View view = mMainContent.getChildAt(j);
+                    EnumContact rowContact = (EnumContact) view.getTag();
+                    if (SenderList.contains(rowContact.ID))
+                    {
+                        int duplicates = Collections.frequency(SenderList, rowContact.ID);
+                        ((TextView) view.findViewById(R.id.model_contactList_status)).setText(String.format(getString(R.string.nmsg), duplicates));
+                        view.findViewById(R.id.model_contactList_status).setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        /*{
             final DBSecureTalk mDBSecureTalk = new DBSecureTalk(getActivity().getApplicationContext(), "SecureTalk.db", null, 1, null);
             List<String> mSenders = new ArrayList<String>();
             try

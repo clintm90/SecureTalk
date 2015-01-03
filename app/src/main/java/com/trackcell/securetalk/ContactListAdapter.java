@@ -59,7 +59,7 @@ public class ContactListAdapter extends ArrayAdapter<EnumContact>
 
         if(values.get(position).isPaddingRight)
         {
-            mContactListTitle.setPadding(0, 7, 40, 0);
+            mContactListTitle.setPadding(0, 7, 0, 0);
             mContactListDescription.setPadding(0, 0, 40, 0);
         }
         else
