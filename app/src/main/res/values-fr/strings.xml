@@ -16,7 +16,7 @@
     <string name="nocontact">Vous n\'avez aucun contact !</string>
     <string name="contact">Contacts</string>
     <string name="search">Rechercher</string>
-    <string name="searching">Recherche en cours...</string>
+    <string name="searching">Recherche en cours&#8230;</string>
     <string name="sending">Envoi...</string>
     <string name="searchcontact">Rechercher un contact</string>
     <string name="typemore">Soyez plus précis</string>
@@ -75,7 +75,7 @@
     <string name="securetalkmessage">Message de %s</string>
     <string name="youhavemessage">Vous avez un message.</string>
     <string name="timeout">Temps d\'envoi dépassé</string>
-    <string name="notseempassword">Not seem password</string>
+    <string name="notseempassword">Mot de passes different</string>
     <string name="newmesageby">Nouveau message de %s</string>
     <string name="nmsg">%d msg.</string>
 
