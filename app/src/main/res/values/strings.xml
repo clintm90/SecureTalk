@@ -76,7 +76,7 @@
     <string name="home">Home</string>
     <string name="donation">Make a donation</string>
     <string name="about2">About&#8230;</string>
-    <string name="securetalkmessage">SecureTalk message</string>
+    <string name="securetalkmessage">Message by %s</string>
     <string name="youhavemessage">You have new message.</string>
     <string name="timeout">Timeout</string>
     <string name="notseempassword">Not seem password</string>

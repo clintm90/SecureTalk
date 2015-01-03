@@ -7,8 +7,10 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -21,11 +23,13 @@ import android.widget.Toast;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.map.DefaultedMap;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Timer;
@@ -81,8 +85,19 @@ public class MessageWorker extends Service
                     String Hash = new String(Hex.encodeHex(DigestUtils.md5(currentObject.get("sender").toString().concat("_").concat(currentObject.get("content").toString()))));
                     if(!MessageList.get(Hash))
                     {
-                        //EventBus.getDefault().post(msg.obj.toString());
-                        CallNotification(currentObject.get("sender").toString());
+                        if(!currentObject.get("sender").toString().equals(mPrefsGlobal.getString("owner", "none")))
+                        {
+                            if(!Initialize.ActivityForeground)
+                            {
+                                CallNotification(Hash, currentObject.toString());
+                            }
+                            else
+                            {
+                                //EventBus.getDefault().post(msg.obj.toString());
+                                Ringtone mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mSoundUri);
+                                mRingtone.play();
+                            }
+                        }
                         MessageList.put(Hash, true);
                     }
                 }
@@ -93,24 +108,82 @@ public class MessageWorker extends Service
             }
         }
 
-        private void CallNotification(String message)
+        private void CallNotification(final String hash, final String message)
         {
-            Intent intent = new Intent(getApplicationContext(), Chat.class);
-            intent.putExtra("contact", message);
-            intent.putExtra("public_key", message);
-            intent.putExtra("recipient", message);
-            
-            final PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+            AsyncTask<String,Void,Object[]> NotificationTask = new AsyncTask<String, Void, Object[]>()
+            {
+                @Override
+                protected Object[] doInBackground(String... params)
+                {
+                    try
+                    {
+                        Object[] mRTS = new Object[5];
+                        JSONObject json = new JSONObject(params[0]);
+                        String sender = json.get("sender").toString();
+                        
+                        HttpURLConnection httpURLConnection = (HttpURLConnection) (new URL("http://www.gravatar.com/avatar/" + sender + "?s=80&d=mm")).openConnection();
+                        Bitmap bmp = BitmapFactory.decodeStream(httpURLConnection.getInputStream(), null, new BitmapFactory.Options());
+                        httpURLConnection.disconnect();
+                        
+                        String rts = "", c;
+                        URL mURL = new URL(Initialize.SecureTalkServer + "getUserInfoByID.php?id=" + sender);
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
 
-            Notification.Builder mNotification = new Notification.Builder(getApplicationContext());
-            mNotification.setSmallIcon(R.drawable.ic_stat_message);
-            mNotification.setContentTitle(getString(R.string.securetalkmessage));
-            mNotification.setContentText(getString(R.string.newmesage));
-            mNotification.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-            mNotification.setSound(mSoundUri);
-            mNotification.setContentIntent(mPendingIntent);
+                        while ((c = reader.readLine()) != null)
+                        {
+                            rts += c;
+                        }
+                        mRTS[0] = bmp;
+                        mRTS[1] = rts;
+                        mRTS[2] = sender;
+                        return mRTS;
+                    }
+                    catch (UnknownHostException e)
+                    {
+                        cancel(true);
+                        return null;
+                    }
+                    catch (Exception e)
+                    {
+                        cancel(true);
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+                
+                @Override
+                protected void onPostExecute(Object[] input)
+                {
+                    try
+                    {
+                        JSONObject json = new JSONObject(input[1].toString());
+                        String name = json.getString("name");
+                        String public_key = json.getString("public_key");
 
-            mNotificationManager.notify(message.hashCode(), mNotification.build());
+                        Intent intent = new Intent(getApplicationContext(), Chat.class);
+                        intent.putExtra("contact", name);
+                        intent.putExtra("public_key", public_key);
+                        intent.putExtra("recipient", input[2].toString());
+
+                        final PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+                        Notification.Builder mNotification = new Notification.Builder(getApplicationContext());
+                        mNotification.setSmallIcon(R.drawable.ic_stat_message);
+                        mNotification.setContentTitle(name);
+                        mNotification.setContentText(getString(R.string.newmesage));
+                        mNotification.setLargeIcon((Bitmap) input[0]);
+                        mNotification.setSound(mSoundUri);
+                        mNotification.setContentIntent(mPendingIntent);
+
+                        mNotificationManager.notify(hash.hashCode(), mNotification.build());
+                    }
+                    catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            NotificationTask.execute(message);
         }
     };
 

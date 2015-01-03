@@ -27,23 +27,6 @@ public class Initialize extends Application
         EventBus.getDefault().register(this);
     }
 
-    public void onEventMainThread(String input)
-    {
-        /*NotificationManager mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
-        Notification n  = new Notification.Builder(this)
-                .setContentTitle("New mail from " + "test@gmail.com")
-                .setContentText("Subject")
-                .setSmallIcon(R.drawable.icon)
-                .setContentIntent(pIntent)
-                .setAutoCancel(true)
-                .addAction(R.drawable.icon, "Call", pIntent)
-                .addAction(R.drawable.icon, "More", pIntent)
-                .addAction(R.drawable.icon, "And more", pIntent).build();
-
-        mNotificationManager.notify(0, n);*/
-    }
-
     @DebugOnly
     public static String GenerateRandomWords()
     {

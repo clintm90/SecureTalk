@@ -126,7 +126,6 @@ public class Chat extends Activity
         mNoMessages = (TextView) findViewById(com.trackcell.securetalk.R.id.noMessages);
 
         mChatField.setCursorVisible(false);
-        //mChatField.setText(new String(Character.toChars(0x1F601)));
         mChatField.setText(Html.fromHtml("Salut &#9786; &#8252; &#128515; &#x1f608; &#10084; &#128527;"), TextView.BufferType.SPANNABLE);
 
         //mMainContent.setAdapter(null);

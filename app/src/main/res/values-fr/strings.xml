@@ -72,7 +72,7 @@
     <string name="noaccount">Le compte n\'existe pas</string>
     <string name="Disconnect">Déconnexion</string>
     <string name="newmessage">Nouveau</string>
-    <string name="securetalkmessage">Message SecureTalk</string>
+    <string name="securetalkmessage">Message de %s</string>
     <string name="youhavemessage">Vous avez un message.</string>
     <string name="timeout">Temps d\'envoi dépassé</string>
     <string name="notseempassword">Not seem password</string>
