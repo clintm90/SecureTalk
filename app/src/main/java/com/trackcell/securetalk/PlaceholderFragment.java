@@ -92,22 +92,6 @@ public class PlaceholderFragment extends Fragment
                 e.printStackTrace();
             }
         }
-        /*{
-            final DBSecureTalk mDBSecureTalk = new DBSecureTalk(getActivity().getApplicationContext(), "SecureTalk.db", null, 1, null);
-            List<String> mSenders = new ArrayList<String>();
-            try
-            {
-                for (String current : input.split(","))
-                {
-                    mSenders.add(current);
-                }
-                Populate(mDBSecureTalk, mSenders);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }*/
     }
 
     @Override
