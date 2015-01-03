@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -87,16 +86,7 @@ public class MessageWorker extends Service
                     {
                         if(!currentObject.get("sender").toString().equals(mPrefsGlobal.getString("owner", "none")))
                         {
-                            if(!Initialize.ActivityForeground)
-                            {
-                                CallNotification(Hash, currentObject.toString());
-                            }
-                            else
-                            {
-                                //EventBus.getDefault().post(msg.obj.toString());
-                                Ringtone mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mSoundUri);
-                                mRingtone.play();
-                            }
+                            CallNotification(Hash, currentObject.toString());
                         }
                         MessageList.put(Hash, true);
                     }
@@ -170,6 +160,8 @@ public class MessageWorker extends Service
                         Notification.Builder mNotification = new Notification.Builder(getApplicationContext());
                         mNotification.setSmallIcon(R.drawable.ic_stat_message);
                         mNotification.setContentTitle(name);
+                        mNotification.setAutoCancel(true);
+                        mNotification.setTicker(String.format(getString(R.string.newmesageby), name));
                         mNotification.setContentText(getString(R.string.newmesage));
                         mNotification.setLargeIcon((Bitmap) input[0]);
                         mNotification.setSound(mSoundUri);

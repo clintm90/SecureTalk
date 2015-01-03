@@ -4,8 +4,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.text.format.DateUtils;
 
-import de.greenrobot.event.EventBus;
-
 public class Initialize extends Application
 {
     public static String SecureTalkServer = "http://securetalk-sql.sourceforge.net/";
@@ -23,8 +21,6 @@ public class Initialize extends Application
 
         MessageWorkerService = new Intent(this, MessageWorker.class);
         getApplicationContext().startService(MessageWorkerService);
-
-        EventBus.getDefault().register(this);
     }
 
     @DebugOnly

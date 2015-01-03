@@ -76,5 +76,6 @@
     <string name="youhavemessage">Vous avez un message.</string>
     <string name="timeout">Temps d\'envoi dépassé</string>
     <string name="notseempassword">Not seem password</string>
+    <string name="newmesageby">Nouveau message de %s</string>
 
 </resources>

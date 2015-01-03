@@ -80,5 +80,6 @@
     <string name="youhavemessage">You have new message.</string>
     <string name="timeout">Timeout</string>
     <string name="notseempassword">Not seem password</string>
+    <string name="newmesageby">New message from %s</string>
 
 </resources>
