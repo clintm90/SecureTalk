@@ -1,7 +1,10 @@
 package com.trackcell.securetalk;
 
 import android.app.Application;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.text.format.DateUtils;
 
 public class Initialize extends Application
@@ -21,6 +24,20 @@ public class Initialize extends Application
 
         MessageWorkerService = new Intent(this, MessageWorker.class);
         getApplicationContext().startService(MessageWorkerService);
+    }
+    
+    public static void Badge(Context context, boolean show)
+    {
+        if(show)
+        {
+            context.getPackageManager().setComponentEnabledSetting(new ComponentName("com.trackcell.securetalk", "com.trackcell.securetalk.BadgeNo"), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            context.getPackageManager().setComponentEnabledSetting(new ComponentName("com.trackcell.securetalk", "com.trackcell.securetalk.Badge"), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+        }
+        else
+        {
+            context.getPackageManager().setComponentEnabledSetting(new ComponentName("com.trackcell.securetalk", "com.trackcell.securetalk.BadgeNo"), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+            context.getPackageManager().setComponentEnabledSetting(new ComponentName("com.trackcell.securetalk", "com.trackcell.securetalk.Badge"), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+        }
     }
 
     @DebugOnly

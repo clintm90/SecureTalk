@@ -4,4 +4,7 @@
     <item>
         <bitmap android:src="@drawable/ic_launcher" android:antialias="true" android:gravity="left" />
     </item>
+    <item>
+        <bitmap android:src="@drawable/asterisk" android:antialias="true" />
+    </item>
 </layer-list>

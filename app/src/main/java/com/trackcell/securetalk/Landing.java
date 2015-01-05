@@ -113,7 +113,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         {
             mKeyPairGenerator = null;
         }
-
+        
         setContentView(R.layout.activity_landing);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -668,6 +668,8 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                 default:
                     break;
             }
+
+            startService(Initialize.MessageWorkerService);
 
             getFragmentManager().beginTransaction()
                     .replace(R.id.container, PlaceholderFragment.newInstance(1))
