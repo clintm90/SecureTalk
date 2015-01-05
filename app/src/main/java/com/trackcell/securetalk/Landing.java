@@ -124,11 +124,6 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
     }
 
-    public void test()
-    {
-        Toast.makeText(getApplicationContext(), "salut", Toast.LENGTH_LONG).show();
-    }
-
     public void InitUser()
     {
         mKP = mKeyPairGenerator.generateKeyPair();
@@ -516,7 +511,10 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                 }
                 finally
                 {
-                    httpURLConnection.disconnect();
+                    if (httpURLConnection != null)
+                    {
+                        httpURLConnection.disconnect();
+                    }
                 }
             }
 
