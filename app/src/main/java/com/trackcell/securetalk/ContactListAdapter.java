@@ -64,6 +64,9 @@ public class ContactListAdapter extends ArrayAdapter<EnumContact>
         }
         else
         {
+            ViewGroup.LayoutParams params = mContactListTitle.getLayoutParams();
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            mContactListTitle.setLayoutParams(params);
             mContactListTitle.setPadding(0, 7, 5, 0);
             mContactListDescription.setPadding(0, 0, 5, 0);
         }

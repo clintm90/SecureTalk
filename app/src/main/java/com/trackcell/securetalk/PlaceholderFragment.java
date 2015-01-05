@@ -82,7 +82,7 @@ public class PlaceholderFragment extends Fragment
                     if (SenderList.contains(rowContact.ID))
                     {
                         int duplicates = Collections.frequency(SenderList, rowContact.ID);
-                        ((TextView) view.findViewById(R.id.model_contactList_status)).setText(String.format(getString(R.string.nmsg), duplicates));
+                        ((TextView) view.findViewById(R.id.model_contactList_status)).setText(String.valueOf(duplicates));
                         view.findViewById(R.id.model_contactList_status).setVisibility(View.VISIBLE);
                     }
                 }
@@ -223,6 +223,7 @@ public class PlaceholderFragment extends Fragment
                 intent.putExtra("contact", ((EnumContact) view.getTag()).Name);
                 intent.putExtra("public_key", ((EnumContact) view.getTag()).PublicKey);
                 intent.putExtra("recipient", ((EnumContact) view.getTag()).ID);
+                getActivity().getApplicationContext().stopService(Initialize.MessageWorkerService);
                 getActivity().startActivityForResult(intent, 1);
             }
         });

@@ -211,6 +211,7 @@ public class Chat extends Activity
                     @Override
                     protected String doInBackground(String... params)
                     {
+                        Thread.currentThread().setName("Chat_SendCurrentMessage");
                         String MessageContent = "";
 
                         if (params[2].equals("none"))

@@ -14,16 +14,15 @@
           android:showAsAction="always">
         <menu>
             <item android:id="@+id/action_"
-                  android:title="A Propos..."
-                  android:onClick="GotoAbout"
+                  android:title="@string/how"
                   android:icon="@drawable/ic_action_about"
                   android:showAsAction="always" />
 
-            <item android:id="@+id/action_profile"
+            <!--<item android:id="@+id/action_profile"
                   android:title="@string/profile"
                   android:icon="@drawable/ic_action_profile"
                   android:onClick="GotoProfile"
-                  android:showAsAction="always" />
+                  android:showAsAction="always" />-->
 
             <item android:id="@+id/action_settings"
                   android:title="@string/action_settings"

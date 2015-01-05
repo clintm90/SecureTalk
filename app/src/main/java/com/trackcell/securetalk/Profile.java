@@ -21,6 +21,8 @@ public class Profile extends Activity
     private WebView mWebView;
     private SharedPreferences mPrefsGlobal;
     private SharedPreferences.Editor mStorageGlobal;
+    private SharedPreferences mPrefs;
+    private SharedPreferences.Editor mStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -38,6 +40,9 @@ public class Profile extends Activity
 
         mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mStorageGlobal = mPrefsGlobal.edit();
+        
+        mPrefs = getSharedPreferences("securetalk_elements", MODE_APPEND);
+        mStorage = mPrefs.edit();
         
         mWebView = (WebView)findViewById(R.id.webView);
         mWebView.setWebViewClient(new WebViewClient());
@@ -94,7 +99,9 @@ public class Profile extends Activity
 
     public void Disconnect(MenuItem item)
     {
+        mStorage.clear();
         mStorageGlobal.clear();
+        mStorage.apply();
         mStorageGlobal.apply();
         setResult(RESULT_OK, new Intent().putExtra("result", 1));
         finish();

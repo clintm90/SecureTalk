@@ -1,11 +1,9 @@
 <resources>
 
-    <string name="app_name">SecureTalk</string>
-    <string name="about">Acerca SecureTalk</string>
+    <string name="about">Acerca SecureTalk&#8230;</string>
     <string name="photo">photo</string>
-    <string name="appwelcome">SecureTalk Bienvenido</string>
+    <string name="appwelcome">Bienvenido SecureTalk</string>
     <string name="cancel">Cancelar</string>
-    <string name="banner_ad_unit_id">ca-app-pub-8459890125912268/8527258348</string>
     <string name="action_valid">Validar</string>
     <string name="action_settings">Configuraciones</string>
     <string name="action_menu_send">Envíe el mensaje</string>
@@ -21,7 +19,6 @@
     <string name="deletecontact">Eliminar contacto</string>
     <string name="donation">Donar</string>
     <string name="entermessage">Escriba un mensaje</string>
-    <string name="firstlaunch">FIRST_LAUNCH</string>
     <string name="home">Bienvenida</string>
     <string name="invite">Invitar a los contactos</string>
     <string name="loading">Cargando&#8230;</string>
@@ -67,5 +64,9 @@
     <string name="wouldelete">¿Realmente deseas eliminar este contacto?</string>
     <string name="yes">Sí</string>
     <string name="youhavemessage">Tienes un nuevo correo</string>
+    <string name="app_name"></string>
+    <string name="banner_ad_unit_id" translatable="false"></string>
+    <string name="acceptlicense">Mi akceptas la terminojn de uzo</string>
+    <string name="firstlaunch" translatable="false"></string>
 
 </resources>

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SecureTalk</string>
     <string name="appwelcome">Bienvenue dans SecureTalk</string>
     <string name="noset">.</string>
     <string name="action_menu_add">Ajouter un contact</string>
-    <string name="action_menu_more">Plus…</string>
     <string name="action_settings">Paramètres</string>
     <string name="action_valid">Valider</string>
     <string name="home">Accueil</string>
@@ -44,7 +42,6 @@
     <string name="title_activity_chat">Chat</string>
     <string name="title_activity_first_launch">FirstLaunch</string>
     <string name="title_activity_activity_first_launch">ActivityFirstLaunch</string>
-    <string name="firstlaunch">PREMIER LANCEMENT</string>
     <string name="userexist">Impossible de s\'enregistrer.</string>
     <string name="title_activity_account">Account</string>
     <string name="title_activity_parameters">Parameters</string>
@@ -54,7 +51,6 @@
     <string name="about_value">C\'est une application gratuite qui vous permet de vous...</string>
     <string name="nomessage">Il n\'y à pas de message</string>
     <string name="action_example">Exemple</string>
-    <string name="banner_ad_unit_id">ca-app-pub-8459890125912268/8527258348</string>
     <string name="navigation_drawer_close">Fermer</string>
     <string name="navigation_drawer_open">Afficher</string>
     <string name="title_activity_landing">Acc</string>
@@ -75,8 +71,13 @@
     <string name="securetalkmessage">Message de %s</string>
     <string name="youhavemessage">Vous avez un message.</string>
     <string name="timeout">Temps d\'envoi dépassé</string>
-    <string name="notseempassword">Mot de passes different</string>
+    <string name="notseempassword">Mots de passe different</string>
     <string name="newmesageby">Nouveau message de %s</string>
     <string name="nmsg">%d msg.</string>
+    <string name="app_name" translatable="false">SecureTalk</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-8459890125912268/8527258348</string>
+    <string name="action_menu_more">Plus&#8230;</string>
+    <string name="firstlaunch" translatable="false"></string>
+    <string name="how">Comment ca marche</string>
 
 </resources>

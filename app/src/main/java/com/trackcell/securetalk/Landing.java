@@ -152,6 +152,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                 {
                     try
                     {
+                        Thread.currentThread().setName("Landing_InitUser");
                         String rts = "", c;
                         URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id=" + params[0] + "&password=" + params[1] + "&put=false");
                         BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
@@ -260,6 +261,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
                         {
                             try
                             {
+                                Thread.currentThread().setName("Landing_Login");
                                 String rts = "", c;
                                 URL mURL = new URL(Initialize.SecureTalkServer + "registerUserByID.php?id=" + params[0] + "&password=" + params[1] + "&put=false");
                                 BufferedReader reader = new BufferedReader(new InputStreamReader(mURL.openStream()));
@@ -493,6 +495,7 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
             @Override
             protected Bitmap doInBackground(String... params)
             {
+                Thread.currentThread().setName("Landing_LoadGravatar");
                 HttpURLConnection httpURLConnection = null;
 
                 try

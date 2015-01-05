@@ -19,14 +19,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.map.DefaultedMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.EOFException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -63,6 +60,8 @@ public class MessageWorker extends Service
         mNotificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mPrefsGlobal = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+        Toast.makeText(getApplicationContext(), "service up", Toast.LENGTH_SHORT).show();
+        
         mSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mSoundUri);
@@ -85,7 +84,7 @@ public class MessageWorker extends Service
                 for (int i = 0; i < mItems.getJSONArray("item").length(); i++)
                 {
                     JSONObject currentObject = mItems.getJSONArray("item").getJSONObject(i);
-                    String Hash = new String(Hex.encodeHex(DigestUtils.md5(currentObject.get("sender").toString().concat("_").concat(currentObject.get("content").toString()))));
+                    String Hash = currentObject.get("hash").toString();
                     if(!MessageList.get(Hash))
                     {
                         if(!currentObject.get("sender").toString().equals(mPrefsGlobal.getString("owner", "none")))
@@ -219,10 +218,6 @@ public class MessageWorker extends Service
             {
                 cancel(true);
                 return null;
-            }
-            catch(EOFException e)
-            {
-                return "null,null";
             }
             catch (Exception e)
             {

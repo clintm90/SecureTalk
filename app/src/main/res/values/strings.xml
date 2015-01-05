@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="about">About SecureTalk...</string>
+    <string name="about">About SecureTalk…</string>
     <string name="action_menu_add">Add a contact</string>
     <string name="action_menu_joinpart">Join a file</string>
-    <string name="action_menu_more">More...</string>
+    <string name="action_menu_more">More…</string>
     <string name="action_menu_save">Save</string>
     <string name="action_menu_send">Send message</string>
     <string name="action_settings">Parameters</string>
@@ -15,7 +15,7 @@
     <string name="contact">Contacts</string>
     <string name="deletecontact">Delete contact</string>
     <string name="entermessage">Enter a message</string>
-    <string name="loading">Loading&#8230;</string>
+    <string name="loading">Loading…</string>
     <string name="mail">Mail address</string>
     <string name="name">First and Last Name</string>
     <string name="newmesage">You have new message.</string>
@@ -27,13 +27,13 @@
     <string name="noset">.</string>
     <string name="profile">My Account</string>
     <string name="refuse">Refuse</string>
-    <string name="register">Registering&#8230;</string>
-    <string name="registeronline">Online registering&#8230;</string>
+    <string name="register">Registering…</string>
+    <string name="registeronline">Online registering…</string>
     <string name="search">Search</string>
     <string name="searchcontact">Search a contact</string>
-    <string name="searching">Searching&#8230;</string>
-    <string name="sending">Sending&#8230;</string>
-    <string name="showcontact">More&#8230;</string>
+    <string name="searching">Searching…</string>
+    <string name="sending">Sending…</string>
+    <string name="showcontact">More…</string>
     <string name="title_activity_about">About...</string>
     <string name="title_activity_account">Account</string>
     <string name="title_activity_chat">Chat</string>
@@ -43,7 +43,7 @@
     <string name="valid">Accept</string>
     <string name="wouldelete">Delete this contact ?</string>
     <string name="yes">Yes</string>
-    <string name="acceptlicense">I accept license</string>
+    <string name="acceptlicense">I accept the terms of use</string>
     <string name="about_value">About</string>
     <string name="title_activity_landing">Landing</string>
     <string name="title_section1">Section 1</string>
@@ -51,9 +51,8 @@
     <string name="title_section3">Section 3</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
+    <string name="action_example">Example</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="banner_ad_unit_id">ca-app-pub-8459890125912268/8527258348</string>
     <string name="firstlaunch">FIRST LAUNCH</string>
     <string name="hello_world">Hello world!</string>
@@ -63,8 +62,8 @@
     <string name="sendfile">Send file</string>
     <string name="photo">photo</string>
     <string name="newmessage">New</string>
-    <string name="invite">Inviter des contacts</string>
-    <string name="login">Login</string>
+    <string name="invite">Invite contacts</string>
+    <string name="login">Connecting to SecureTalk</string>
     <string name="password">Password</string>
     <string name="newaccount">New account</string>
     <string name="connect">Sign In</string>
@@ -75,12 +74,15 @@
     <string name="Disconnect">Disconnect</string>
     <string name="home">Home</string>
     <string name="donation">Make a donation</string>
-    <string name="about2">About&#8230;</string>
+    <string name="about2">About…</string>
     <string name="securetalkmessage">Message by %s</string>
     <string name="youhavemessage">You have new message.</string>
     <string name="timeout">Timeout</string>
     <string name="notseempassword">Not seem password</string>
     <string name="newmesageby">New message from %s</string>
     <string name="nmsg">%d msg.</string>
+    <string name="how">How it works</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>
