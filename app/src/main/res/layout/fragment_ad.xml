@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id">
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id2">
     </com.google.android.gms.ads.AdView>
 
 </RelativeLayout>

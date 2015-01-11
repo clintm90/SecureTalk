@@ -721,8 +721,14 @@ public class Landing extends Activity implements NavigationDrawerFragment.Naviga
     public void restoreActionBar()
     {
         ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
+        if (actionBar != null)
+        {
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        }
+        if (actionBar != null)
+        {
+            actionBar.setDisplayShowTitleEnabled(true);
+        }
         actionBar.setTitle(mTitle);
     }
 

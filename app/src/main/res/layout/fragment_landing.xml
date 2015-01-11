@@ -28,7 +28,8 @@
         android:divider="@color/lightmiddlegrey"
         android:dividerHeight="1dp"
         tools:listitem="@layout/model_contactlist"
-        android:layout_below="@+id/WelcomeLabel"/>
+        android:layout_below="@+id/WelcomeLabel"
+        android:layout_above="@+id/adView"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -57,5 +58,24 @@
         android:textColor="@color/white"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"/>
+
+    <!--<fragment
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="com.trackcell.securetalk.AdFragment"
+        android:id="@+id/adFragment"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        tools:layout="@layout/fragment_ad"/>-->
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        ads:adSize="SMART_BANNER"
+        android:layout_alignParentBottom="true"
+        ads:adUnitId="@string/banner_ad_unit_id2">
+    </com.google.android.gms.ads.AdView>
 
 </RelativeLayout>

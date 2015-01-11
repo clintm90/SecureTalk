@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -44,11 +43,11 @@ public class Profile extends Activity
         mPrefs = getSharedPreferences("securetalk_elements", MODE_APPEND);
         mStorage = mPrefs.edit();
         
-        mWebView = (WebView)findViewById(R.id.webView);
+        /*mWebView = (WebView)findViewById(R.id.webView);
         mWebView.setWebViewClient(new WebViewClient());
-        mWebView.loadData("<h1>Loading...</h1>", "test/html", "UTF-8");
+        mWebView.loadData("<h1>Loading...</h1>", "test/html", "UTF-8");*/
 
-        LoadProfile();
+        //LoadProfile();
     }
 
     public void LoadProfile()

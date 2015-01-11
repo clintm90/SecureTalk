@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 public class AdFragment extends Fragment
@@ -23,9 +22,18 @@ public class AdFragment extends Fragment
     public void onActivityCreated(Bundle bundle)
     {
         super.onActivityCreated(bundle);
-        mAdView = (AdView) getView().findViewById(R.id.adView);
+        /*mAdView = (AdView) getView().findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        mAdView.loadAd(adRequest);*/
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        /*MapFragment f = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        if (f != null)
+            getFragmentManager().beginTransaction().remove(f).commit();*/
     }
 
     @Override

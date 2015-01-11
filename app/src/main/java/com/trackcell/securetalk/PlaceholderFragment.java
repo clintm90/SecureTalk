@@ -22,6 +22,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -113,6 +116,9 @@ public class PlaceholderFragment extends Fragment
                 View rootView = inflater.inflate(R.layout.fragment_landing, container, false);
                 mMainContent = (ListView) rootView.findViewById(R.id.MainContainer);
                 Populate(mDBSecureTalk, new ArrayList<String>());
+                AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
+                AdRequest adRequest = new AdRequest.Builder().build();
+                mAdView.loadAd(adRequest);
                 return rootView;
 
             case 2:
